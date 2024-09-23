@@ -1,7 +1,7 @@
-import BaseLayout from '../Layout/BaseLayout.jsx';
+import BaseLayout from '../../Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
-import Panel from '../Components/Panel.jsx';
-import DataTable from '../Components/Table/DataTable.jsx';
+import Panel from '../../Components/Panel.jsx';
+import DataTable from '../../Components/Table/DataTable.jsx';
 
 function Users() {
     const {

@@ -13,18 +13,29 @@ class UserController extends Controller
             'field' => 'id',
             'label' => 'ID',
             'sortable' => true,
+            'searchable' => true,
             'width' => '1px',
             'align' => 'center',
             'className' => 'justify-center'
         ],
-        ['field' => 'name', 'label' => 'Name', 'sortable' => true],
-        ['field' => 'lastname', 'label' => 'Lastname', 'sortable' => true],
-        ['field' => 'email', 'label' => 'Email', 'sortable' => true],
+        ['field' => 'name', 'label' => 'Name', 'sortable' => true, 'searchable' => true],
+        ['field' => 'lastname', 'label' => 'Lastname', 'sortable' => true, 'searchable' => true],
+        ['field' => 'email', 'label' => 'Email', 'sortable' => true, 'searchable' => true],
         [
             'field' => 'status',
             'label' => 'Status',
             'sortable' => true,
+            'searchable' => true,
             'width' => '1px',
+            'align' => 'center',
+            'className' => 'justify-center'
+        ],
+        [
+            'field' => 'actions',
+            'label' => '',
+            'sortable' => false,
+            'searchable' => false,
+            'width' => '100px',
             'align' => 'center',
             'className' => 'justify-center'
         ],
@@ -59,25 +70,42 @@ class UserController extends Controller
         $users = $query->paginate($itemsPerPage)->appends($trustedParams);
 
         // dd($query->toSql(), $query->getBindings());
-        //dd($trustedParams);
 
         return Inertia::render(
-            'Users',
+            'Users/Users.index',
             [
                 'DataTable' => [
                     'data' => $users,
                     'columns' => self::TABLE_COLUMNS,
                     'formAction' => self::FORM_ACTION,
+                    'editRoute' => 'users.edit',
+                    'destroyRoute' => 'users.destroy',
                     'filters' => $trustedParams,
                     'perPageOptions' => self::PER_PAGE_OPTIONS,
                     'perPageDefault' => self::ITEMS_PER_PAGE,
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], self::TABLE_COLUMNS),
+                    ], array_filter(self::TABLE_COLUMNS, fn($column) => $column['searchable'] !== false)),
                     'searchByDefault' => self::SEARCH_BY,
                 ],
             ]
         );
+    }
+
+    public function edit(User $user)
+    {
+        return Inertia::render(
+            'Users/Users.edit',
+            [
+                'user' => $user
+            ]
+        );
+    }
+
+    public function destroy(User $user)
+    {
+        sleep(2);
+        $user->delete();
     }
 }

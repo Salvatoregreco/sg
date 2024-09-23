@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { router, usePage } from '@inertiajs/react';
+import { router, usePage, Link } from '@inertiajs/react';
 import { MagnifyingGlassIcon, ArrowPathIcon } from '@heroicons/react/16/solid';
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/react/16/solid';
+import { ChevronUpIcon, ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { BeatLoader } from 'react-spinners';
 
 const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
@@ -10,7 +10,14 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
     const MIN_LOADING_TIME = 500;
     const COMPONENT = 'DataTable';
     const {
-        DataTable: { perPageOptions, perPageDefault, searchByDefault, searchByOptions },
+        DataTable: {
+            perPageOptions,
+            perPageDefault,
+            searchByDefault,
+            searchByOptions,
+            editRoute,
+            destroyRoute,
+        },
     } = usePage().props;
 
     const [search, setSearch] = useState(filters?.search || '');
@@ -139,15 +146,63 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
         dataTableRequest(formAction, {});
     };
 
+    const handleOnBeforeDestroy = (item) => {
+        const confirmation = window.confirm(
+            `User "${item.name} ${item.lastname}" will be deleted, are you sure?`
+        );
+
+        setIsLoading(true);
+
+        if (!confirmation) {
+            setIsLoading(false);
+            return false;
+        } else {
+            setIsLoading(false);
+            return true;
+        }
+    };
+
     const colRender = (col, item) => {
         if (col.field === 'id') {
-            return `<span class="inline-block bg-sg px-1 rounded-full w-full text-white leading-7">${item.id}</span>`;
+            return (
+                <span className='inline-block bg-sg px-1 rounded-full w-full text-white leading-7'>
+                    {item.id}
+                </span>
+            );
         }
 
         if (col.field === 'status') {
-            return item.status === 'Y'
-                ? '<span class="inline-block bg-green-400 rounded-full w-full leading-7">ON</span>'
-                : '<span class="inline-block bg-red-400 rounded-full w-full leading-7">OFF</span>';
+            return item.status === 'Y' ? (
+                <span className='inline-block bg-green-400 rounded-full w-full leading-7'>ON</span>
+            ) : (
+                <span className='inline-block bg-red-400 rounded-full w-full leading-7'>OFF</span>
+            );
+        }
+
+        if (col.field === 'actions') {
+            return (
+                <div className='flex justify-center space-x-2'>
+                    <Link
+                        title='Edit'
+                        className='bg-sg-600 hover:opacity-75 p-1 rounded-full transition-opacity'
+                        href={route(editRoute, item)}
+                        method='get'
+                        as='button'>
+                        <PencilIcon className='w-5 h-5 text-white' />
+                    </Link>
+
+                    <Link
+                        title='Delete'
+                        className='bg-red-600 hover:opacity-75 p-1 rounded-full transition-opacity'
+                        href={route(destroyRoute, item)}
+                        method='delete'
+                        as='button'
+                        headers={{ 'X-Inertia-Partial-Component': 'true' }}
+                        onBefore={() => handleOnBeforeDestroy(item)}>
+                        <TrashIcon className='w-5 h-5 text-white' />
+                    </Link>
+                </div>
+            );
         }
 
         return item[col.field];
@@ -277,10 +332,9 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                         <td
                                             key={col.field}
                                             className='p-2 border-l'
-                                            align={col.align}
-                                            dangerouslySetInnerHTML={{
-                                                __html: colRender(col, item),
-                                            }}></td>
+                                            align={col.align}>
+                                            {colRender(col, item)}
+                                        </td>
                                     ))}
                                 </tr>
                             ))
