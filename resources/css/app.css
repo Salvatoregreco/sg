@@ -1,0 +1,13 @@
+@import 'loader.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    margin: 0 !important;
+    padding: 0;
+}
+
+#page-content > :not(:first-child) {
+    @apply mt-3;
+}

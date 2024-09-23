@@ -1,0 +1,45 @@
+import { Link, usePage } from '@inertiajs/react';
+import Sidebar from '../Components/Sidebar.jsx';
+import SidebarToggle from '../Components/SidebarToggle.jsx';
+import { useState } from 'react';
+
+export default function BaseLayout({ children }) {
+    const { auth } = usePage().props;
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+    const toggleSidebar = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    return (
+        <div className='relative flex h-screen overflow-hidden'>
+            <Sidebar isOpen={isSidebarOpen} />
+
+            <div
+                className={`flex-1 flex flex-col transition-all duration-300 ${
+                    isSidebarOpen ? 'ml-64' : 'ml-0'
+                }`}>
+                <header className='bg-sg shadow-md px-6 py-4 text-white'>
+                    <div className='flex justify-between items-center gap-5 mx-auto'>
+                        <SidebarToggle
+                            isOpen={isSidebarOpen}
+                            onClick={toggleSidebar}
+                        />
+                        {auth.user ? (
+                            <Link href='/logout'>Logout</Link>
+                        ) : (
+                            <Link href='/login'>Login</Link>
+                        )}
+                    </div>
+                </header>
+                <main className='flex-1 bg-slate-200 p-2 min-h-0 overflow-y-auto'>
+                    <div
+                        id='page-content'
+                        className='min-h-full'>
+                        {children}
+                    </div>
+                </main>
+            </div>
+        </div>
+    );
+}

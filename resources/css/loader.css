@@ -1,0 +1,57 @@
+/* Nascondi la barra di progresso */
+#nprogress .bar {
+    display: none;
+}
+
+/* Personalizza il colore dello spinner, se desideri */
+#nprogress .spinner-icon {
+    border-top-color: #29d;
+    border-left-color: #29d;
+}
+
+/* Centra lo spinner al centro della pagina */
+#nprogress .spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050; /* Assicurati che sia sopra gli altri elementi */
+}
+
+/* Opzionale: Stile personalizzato per lo spinner */
+#nprogress .spinner-icon {
+    width: 60px; /* Dimensione dello spinner */
+    height: 60px;
+    border: 4px solid transparent;
+    @apply border-t-sg;
+    @apply border-l-sg;
+    border-radius: 50%;
+    animation: nprogress-spinner 0.6s linear infinite;
+}
+
+/* Overlay per impedire l'interazione */
+#nprogress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Colore semitrasparente */
+    z-index: 1049; /* Sotto lo spinner ma sopra il resto della pagina */
+    pointer-events: none; /* Impedisce clic su elementi sottostanti */
+    display: none; /* Nascondi l'overlay di default */
+}
+
+/* Mostra l'overlay quando nprogress è attivo */
+body.nprogress-busy #nprogress-overlay {
+    display: block;
+}
+
+@keyframes nprogress-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
