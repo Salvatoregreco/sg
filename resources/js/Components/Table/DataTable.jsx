@@ -137,7 +137,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
 
     const handleOnBeforeDestroy = (item) => {
         const confirmation = window.confirm(
-            `User "${item.name} ${item.lastname}" will be deleted, are you sure?`
+            `Record with ID: ${item.id} will be deleted, are you sure?`
         );
 
         if (!confirmation) {

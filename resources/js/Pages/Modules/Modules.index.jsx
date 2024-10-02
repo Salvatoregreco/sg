@@ -1,18 +1,22 @@
-import BaseLayout from '../Layout/BaseLayout';
+import BaseLayout from '../../Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
-import Panel from '../Components/Panel.jsx';
-import DataTable from '../Components/Table/DataTable.jsx';
+import Panel from '../../Components/Panel.jsx';
+import DataTable from '../../Components/Table/DataTable.jsx';
+import TitleBar from '../../Components/TitleBar.jsx';
+import Alert from '../../Components/Alert.jsx';
 
 function Modules() {
     const {
         DataTable: { data: modules, columns, filters, formAction },
+        flash,
     } = usePage().props;
 
     return (
         <>
             <Head title='Modules' />
+            <TitleBar>Modules</TitleBar>
             <Panel>
-                <h2 className='mb-3 text-2xl'>Modules</h2>
+                <Alert type={flash} />
                 <DataTable
                     data={modules}
                     columns={columns}

@@ -25,11 +25,14 @@ export default function BaseLayout({ children }) {
                             isOpen={isSidebarOpen}
                             onClick={toggleSidebar}
                         />
-                        {auth.user ? (
-                            <Link href='/logout'>Logout</Link>
-                        ) : (
-                            <Link href='/login'>Login</Link>
-                        )}
+                        <div className='flex items-center gap-3'>
+                            {auth.user ? <p>Logged in as: {auth.user.name}</p> : null}
+                            {auth.user ? (
+                                <Link href='/logout'>Logout</Link>
+                            ) : (
+                                <Link href='/login'>Login</Link>
+                            )}
+                        </div>
                     </div>
                 </header>
                 <main className='flex-1 bg-slate-200 p-2 min-h-0 overflow-y-auto'>

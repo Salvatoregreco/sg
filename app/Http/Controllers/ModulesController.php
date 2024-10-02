@@ -13,20 +13,31 @@ class ModulesController extends Controller
             'field' => 'id',
             'label' => 'ID',
             'sortable' => true,
+            'searchable' => true,
             'width' => '1px',
             'align' => 'center',
             'className' => 'justify-center'
         ],
-        ['field' => 'label', 'label' => 'Label', 'sortable' => false],
+        ['field' => 'label', 'label' => 'Label', 'sortable' => false, 'searchable' => true],
         [
             'field' => 'status',
             'label' => 'Status',
             'sortable' => true,
+            'searchable' => true,
             'width' => '1px',
             'align' => 'center',
             'className' => 'justify-center'
         ],
-        ['field' => 'created_at', 'label' => 'Creation Date', 'sortable' => true],
+        ['field' => 'created_at', 'label' => 'Creation Date', 'sortable' => true, 'searchable' => true],
+        [
+            'field' => 'actions',
+            'label' => '',
+            'sortable' => false,
+            'searchable' => false,
+            'width' => '100px',
+            'align' => 'center',
+            'className' => 'justify-center'
+        ],
     ];
     const ITEMS_PER_PAGE = 10;
     const PER_PAGE_OPTIONS = [5, 10, 20, 50, 100];
@@ -60,12 +71,14 @@ class ModulesController extends Controller
         // dd($query->toSql(), $query->getBindings());
 
         return Inertia::render(
-            'Modules',
+            'Modules/Modules.index',
             [
                 'DataTable' => [
                     'data' => $modules,
                     'columns' => self::TABLE_COLUMNS,
                     'formAction' => self::FORM_ACTION,
+                    'editRoute' => 'modules.edit',
+                    'destroyRoute' => 'modules.destroy',
                     'filters' => $trustedParams,
                     'perPageOptions' => self::PER_PAGE_OPTIONS,
                     'perPageDefault' => self::ITEMS_PER_PAGE,
@@ -77,5 +90,23 @@ class ModulesController extends Controller
                 ],
             ]
         );
+    }
+
+    public function edit(Modules $module)
+    {
+        dd($module);
+        // return Inertia::render(
+        //     'Modules/Modules.edit',
+        //     [
+        //         'module' => $module
+        //     ]
+        // );
+    }
+
+    public function destroy(Modules $module)
+    {
+        $module->delete();
+
+        return redirect()->back()->with('success', 'Module deleted successfully!');
     }
 }
