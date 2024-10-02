@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Auth;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -105,7 +106,12 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        sleep(2);
+        if (Auth::user()->id === $user->id) {
+            return redirect()->back()->with('error', 'You cannot delete your own account!');
+        }
+
         $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully!');
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { router, usePage, Link } from '@inertiajs/react';
 import { MagnifyingGlassIcon, ArrowPathIcon } from '@heroicons/react/16/solid';
 import { ChevronUpIcon, ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
@@ -25,13 +25,6 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
     const [page, setPage] = useState(Number(filters?.page) || 1);
     const [search_by, setSearchBy] = useState(filters?.search_by || searchByDefault);
     const [isLoading, setIsLoading] = useState(false);
-    const isMounted = React.useRef(true);
-
-    useEffect(() => {
-        return () => {
-            isMounted.current = false;
-        };
-    }, []);
 
     const dataTableRequest = (url, params = {}, options = {}) => {
         const startTime = Date.now();
@@ -48,14 +41,10 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
 
                 if (remainingTime > 0) {
                     setTimeout(() => {
-                        if (isMounted.current) {
-                            setIsLoading(false);
-                        }
+                        setIsLoading(false);
                     }, remainingTime);
                 } else {
-                    if (isMounted.current) {
-                        setIsLoading(false);
-                    }
+                    setIsLoading(false);
                 }
             },
             onError: (errors) => {
@@ -151,13 +140,11 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
             `User "${item.name} ${item.lastname}" will be deleted, are you sure?`
         );
 
-        setIsLoading(true);
-
         if (!confirmation) {
             setIsLoading(false);
             return false;
         } else {
-            setIsLoading(false);
+            setIsLoading(true);
             return true;
         }
     };
@@ -173,9 +160,13 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
 
         if (col.field === 'status') {
             return item.status === 'Y' ? (
-                <span className='inline-block bg-green-400 rounded-full w-full leading-7'>ON</span>
+                <span className='inline-block border-green-500 bg-green-400 border rounded-full w-full leading-6'>
+                    ON
+                </span>
             ) : (
-                <span className='inline-block bg-red-400 rounded-full w-full leading-7'>OFF</span>
+                <span className='inline-block bg-red-400 border border-red-500 rounded-full w-full leading-6'>
+                    OFF
+                </span>
             );
         }
 
@@ -198,7 +189,8 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                         method='delete'
                         as='button'
                         headers={{ 'X-Inertia-Partial-Component': 'true' }}
-                        onBefore={() => handleOnBeforeDestroy(item)}>
+                        onBefore={() => handleOnBeforeDestroy(item)}
+                        onSuccess={() => setIsLoading(false)}>
                         <TrashIcon className='w-5 h-5 text-white' />
                     </Link>
                 </div>
