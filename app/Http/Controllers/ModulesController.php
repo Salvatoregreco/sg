@@ -2,47 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Modules;
 use Inertia\Inertia;
+use App\Models\Modules;
 use Illuminate\Http\Request;
+use App\Services\DataTableConfig;
 
 class ModulesController extends Controller
 {
-    const TABLE_COLUMNS = [
-        [
-            'field' => 'id',
-            'label' => 'ID',
-            'sortable' => true,
-            'searchable' => true,
-            'width' => '1px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-        ['field' => 'label', 'label' => 'Label', 'sortable' => false, 'searchable' => true],
-        [
-            'field' => 'status',
-            'label' => 'Status',
-            'sortable' => true,
-            'searchable' => true,
-            'width' => '1px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-        ['field' => 'created_at', 'label' => 'Creation Date', 'sortable' => true, 'searchable' => true],
-        [
-            'field' => 'actions',
-            'label' => '',
-            'sortable' => false,
-            'searchable' => false,
-            'width' => '100px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-    ];
-    const ITEMS_PER_PAGE = 10;
-    const PER_PAGE_OPTIONS = [5, 10, 20, 50, 100];
-    const SEARCH_BY = 'label';
-    const FORM_ACTION = '/modules';
+    protected DataTableConfig $dataTableConfig;
+
+    public function __construct()
+    {
+        $this->dataTableConfig = new DataTableConfig([
+            'tableColumns' => [
+                [
+                    'field' => 'id',
+                    'label' => 'ID',
+                    'sortable' => true,
+                    'searchable' => true,
+                    'width' => '1px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+                ['field' => 'label', 'label' => 'Label', 'sortable' => false, 'searchable' => true],
+                [
+                    'field' => 'status',
+                    'label' => 'Status',
+                    'sortable' => true,
+                    'searchable' => true,
+                    'width' => '1px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+                ['field' => 'created_at', 'label' => 'Creation Date', 'sortable' => true, 'searchable' => true],
+                [
+                    'field' => 'actions',
+                    'label' => '',
+                    'sortable' => false,
+                    'searchable' => false,
+                    'width' => '100px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+            ],
+            'searchBy' => 'label',
+            'formAction' => '/modules',
+        ]);
+    }
 
     public function index(Request $request)
     {
@@ -64,7 +70,7 @@ class ModulesController extends Controller
         }
 
         // Elementi per pagina
-        $itemsPerPage = $trustedParams['per_page'] ?? self::ITEMS_PER_PAGE;
+        $itemsPerPage = $trustedParams['per_page'] ?? $this->dataTableConfig->itemsPerPage;
 
         $modules = $query->paginate($itemsPerPage)->appends($trustedParams);
 
@@ -75,18 +81,18 @@ class ModulesController extends Controller
             [
                 'DataTable' => [
                     'data' => $modules,
-                    'columns' => self::TABLE_COLUMNS,
-                    'formAction' => self::FORM_ACTION,
+                    'columns' => $this->dataTableConfig->tableColumns,
+                    'formAction' => $this->dataTableConfig->formAction,
                     'editRoute' => 'modules.edit',
                     'destroyRoute' => 'modules.destroy',
                     'filters' => $trustedParams,
-                    'perPageOptions' => self::PER_PAGE_OPTIONS,
-                    'perPageDefault' => self::ITEMS_PER_PAGE,
+                    'perPageOptions' => $this->dataTableConfig->perPageOptions,
+                    'perPageDefault' => $this->dataTableConfig->itemsPerPage,
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], self::TABLE_COLUMNS),
-                    'searchByDefault' => self::SEARCH_BY,
+                    ], $this->dataTableConfig->tableColumns),
+                    'searchByDefault' => $this->dataTableConfig->searchBy,
                 ],
             ]
         );
@@ -95,12 +101,6 @@ class ModulesController extends Controller
     public function edit(Modules $module)
     {
         dd($module);
-        // return Inertia::render(
-        //     'Modules/Modules.edit',
-        //     [
-        //         'module' => $module
-        //     ]
-        // );
     }
 
     public function destroy(Modules $module)

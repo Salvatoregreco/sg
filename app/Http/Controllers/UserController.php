@@ -2,52 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Auth;
+use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Services\DataTableConfig;
 
 class UserController extends Controller
 {
-    const TABLE_COLUMNS = [
-        [
-            'field' => 'id',
-            'label' => 'ID',
-            'sortable' => true,
-            'searchable' => true,
-            'width' => '1px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-        ['field' => 'name', 'label' => 'Name', 'sortable' => true, 'searchable' => true],
-        ['field' => 'lastname', 'label' => 'Lastname', 'sortable' => true, 'searchable' => true],
-        ['field' => 'email', 'label' => 'Email', 'sortable' => true, 'searchable' => true],
-        [
-            'field' => 'status',
-            'label' => 'Status',
-            'sortable' => true,
-            'searchable' => true,
-            'width' => '1px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-        [
-            'field' => 'actions',
-            'label' => '',
-            'sortable' => false,
-            'searchable' => false,
-            'width' => '100px',
-            'align' => 'center',
-            'className' => 'justify-center'
-        ],
-    ];
-    const ITEMS_PER_PAGE = 10;
-    const PER_PAGE_OPTIONS = [5, 10, 20, 50, 100];
-    const SEARCH_BY = 'name';
-    const FORM_ACTION = '/users';
+    protected DataTableConfig $dataTableConfig;
+
+    public function __construct()
+    {
+        $this->dataTableConfig = new DataTableConfig([
+            'tableColumns' => [
+                [
+                    'field' => 'id',
+                    'label' => 'ID',
+                    'sortable' => true,
+                    'searchable' => true,
+                    'width' => '1px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+                ['field' => 'name', 'label' => 'Name', 'sortable' => true, 'searchable' => true],
+                ['field' => 'lastname', 'label' => 'Lastname', 'sortable' => true, 'searchable' => true],
+                ['field' => 'email', 'label' => 'Email', 'sortable' => true, 'searchable' => true],
+                ['field' => 'phone', 'label' => 'Phone', 'sortable' => true, 'searchable' => true],
+                [
+                    'field' => 'status',
+                    'label' => 'Status',
+                    'sortable' => true,
+                    'searchable' => true,
+                    'width' => '1px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+                [
+                    'field' => 'actions',
+                    'label' => '',
+                    'sortable' => false,
+                    'searchable' => false,
+                    'width' => '100px',
+                    'align' => 'center',
+                    'className' => 'justify-center'
+                ],
+            ],
+            'searchBy' => 'name',
+            'formAction' => '/users',
+        ]);
+    }
 
     public function index(Request $request)
     {
+        sleep(1);
+
         $query = User::query();
         $trustedParams = $request->only(['search', 'search_by', 'sort_key', 'sort_direction', 'per_page', 'page']);
 
@@ -66,7 +75,7 @@ class UserController extends Controller
         }
 
         // Elementi per pagina
-        $itemsPerPage = $trustedParams['per_page'] ?? self::ITEMS_PER_PAGE;
+        $itemsPerPage = $trustedParams['per_page'] ?? $this->dataTableConfig->itemsPerPage;
 
         $users = $query->paginate($itemsPerPage)->appends($trustedParams);
 
@@ -77,18 +86,18 @@ class UserController extends Controller
             [
                 'DataTable' => [
                     'data' => $users,
-                    'columns' => self::TABLE_COLUMNS,
-                    'formAction' => self::FORM_ACTION,
+                    'columns' => $this->dataTableConfig->tableColumns,
+                    'formAction' => $this->dataTableConfig->formAction,
                     'editRoute' => 'users.edit',
                     'destroyRoute' => 'users.destroy',
                     'filters' => $trustedParams,
-                    'perPageOptions' => self::PER_PAGE_OPTIONS,
-                    'perPageDefault' => self::ITEMS_PER_PAGE,
+                    'perPageOptions' => $this->dataTableConfig->perPageOptions,
+                    'perPageDefault' => $this->dataTableConfig->itemsPerPage,
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], array_filter(self::TABLE_COLUMNS, fn($column) => $column['searchable'] !== false)),
-                    'searchByDefault' => self::SEARCH_BY,
+                    ], array_filter($this->dataTableConfig->tableColumns, fn($column) => $column['searchable'] !== false)),
+                    'searchByDefault' => $this->dataTableConfig->searchBy,
                 ],
             ]
         );
@@ -96,12 +105,24 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return Inertia::render(
-            'Users/Users.edit',
-            [
-                'user' => $user
-            ]
-        );
+        return Inertia::render('Users/Users.edit', ['user' => $user]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:sg_users,email,' . $user->id,
+            'phone' => 'max:255',
+            'status' => 'required|in:Y,N'
+        ]);
+
+        sleep(1);
+
+        $user->update($validated);
+
+        return to_route('users.index')->with('success', 'User updated successfully!');
     }
 
     public function destroy(User $user)
@@ -110,8 +131,10 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'You cannot delete your own account!');
         }
 
+        sleep(1);
+
         $user->delete();
 
-        return redirect()->back()->with('success', 'User deleted successfully!');
+        return to_route('users.index')->with('success', 'User deleted successfully!');
     }
 }
