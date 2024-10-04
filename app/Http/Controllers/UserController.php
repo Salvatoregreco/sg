@@ -50,6 +50,7 @@ class UserController extends Controller
             ],
             'searchBy' => 'name',
             'formAction' => '/users',
+            'itemsPerPage' => 20,
         ]);
     }
 

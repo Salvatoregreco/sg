@@ -262,7 +262,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
             </div>
 
             {/* Table */}
-            <div className='border max-h-[500px] overflow-y-auto'>
+            <div className='border max-h-[923px] overflow-y-auto'>
                 <table
                     id='data-table'
                     className='border-separate bg-white min-w-full'
