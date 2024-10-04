@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modules', function (Blueprint $table) {
+        Schema::create('sg_modules', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('label');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamp('deleted_at')->nullable();
         });
 
-        Schema::create('submodules', function (Blueprint $table) {
+        Schema::create('sg_submodules', function (Blueprint $table) {
             $table->id();
             $table->foreignId('module_id');
             $table->string('label');
@@ -42,7 +42,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modules');
-        Schema::dropIfExists('submodules');
+        Schema::dropIfExists('sg_modules');
+        Schema::dropIfExists('sg_submodules');
     }
 };
