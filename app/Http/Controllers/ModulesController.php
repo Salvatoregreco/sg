@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Modules;
 use Illuminate\Http\Request;
-use App\Services\DataTableConfig;
+use App\Traits\HasDataTable;
 
 class ModulesController extends Controller
 {
-    protected DataTableConfig $dataTableConfig;
+    use HasDataTable;
 
     public function __construct()
-    {
-        $this->dataTableConfig = new DataTableConfig([
+    {   
+        $this->setConfigTable([
             'tableColumns' => [
                 [
                     'field' => 'id',
@@ -70,7 +70,7 @@ class ModulesController extends Controller
         }
 
         // Elementi per pagina
-        $itemsPerPage = $trustedParams['per_page'] ?? $this->dataTableConfig->itemsPerPage;
+        $itemsPerPage = $trustedParams['per_page'] ?? $this->getConfigTableKey('itemsPerPage');
 
         $modules = $query->paginate($itemsPerPage)->appends($trustedParams);
 
@@ -81,18 +81,18 @@ class ModulesController extends Controller
             [
                 'DataTable' => [
                     'data' => $modules,
-                    'columns' => $this->dataTableConfig->tableColumns,
-                    'formAction' => $this->dataTableConfig->formAction,
+                    'columns' => $this->getConfigTableKey('tableColumns'),
+                    'formAction' => $this->getConfigTableKey('formAction'),
                     'editRoute' => 'modules.edit',
                     'destroyRoute' => 'modules.destroy',
                     'filters' => $trustedParams,
-                    'perPageOptions' => $this->dataTableConfig->perPageOptions,
-                    'perPageDefault' => $this->dataTableConfig->itemsPerPage,
+                    'perPageOptions' => $this->getConfigTableKey('perPageOptions'),
+                    'perPageDefault' => $this->getConfigTableKey('itemsPerPage'),
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], $this->dataTableConfig->tableColumns),
-                    'searchByDefault' => $this->dataTableConfig->searchBy,
+                    ], $this->getConfigTableKey('tableColumns')),
+                    'searchByDefault' => $this->getConfigTableKey('searchBy'),
                 ],
             ]
         );

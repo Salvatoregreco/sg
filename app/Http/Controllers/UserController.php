@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Traits\HasDataTable;
 use Illuminate\Http\Request;
-use App\Services\DataTableConfig;
 
 class UserController extends Controller
 {
-    protected DataTableConfig $dataTableConfig;
-
+    use HasDataTable;
+    
     public function __construct()
     {
-        $this->dataTableConfig = new DataTableConfig([
+        $this->setConfigTable([
             'tableColumns' => [
                 [
                     'field' => 'id',
@@ -76,7 +76,7 @@ class UserController extends Controller
         }
 
         // Elementi per pagina
-        $itemsPerPage = $trustedParams['per_page'] ?? $this->dataTableConfig->itemsPerPage;
+        $itemsPerPage = $trustedParams['per_page'] ?? $this->getConfigTableKey('itemsPerPage');
 
         $users = $query->paginate($itemsPerPage)->appends($trustedParams);
 
@@ -87,18 +87,18 @@ class UserController extends Controller
             [
                 'DataTable' => [
                     'data' => $users,
-                    'columns' => $this->dataTableConfig->tableColumns,
-                    'formAction' => $this->dataTableConfig->formAction,
+                    'columns' => $this->getConfigTableKey('tableColumns'),
+                    'formAction' => $this->getConfigTableKey('formAction'),
                     'editRoute' => 'users.edit',
                     'destroyRoute' => 'users.destroy',
                     'filters' => $trustedParams,
-                    'perPageOptions' => $this->dataTableConfig->perPageOptions,
-                    'perPageDefault' => $this->dataTableConfig->itemsPerPage,
+                    'perPageOptions' => $this->getConfigTableKey('perPageOptions'),
+                    'perPageDefault' => $this->getConfigTableKey('itemsPerPage'),
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], array_filter($this->dataTableConfig->tableColumns, fn($column) => $column['searchable'] !== false)),
-                    'searchByDefault' => $this->dataTableConfig->searchBy,
+                    ], array_filter($this->getConfigTableKey('tableColumns'), fn($column) => $column['searchable'] !== false)),
+                    'searchByDefault' => $this->getConfigTableKey('searchBy'),
                 ],
             ]
         );
