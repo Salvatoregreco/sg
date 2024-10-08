@@ -1,20 +1,18 @@
 import BaseLayout from '../Layout/BaseLayout';
 import { Head, usePage } from '@inertiajs/react';
 import Panel from '../Components/Panel.jsx';
+import TitleBar from '../Components/TitleBar.jsx';
 
 function Home() {
     const { auth } = usePage().props;
 
     return (
         <>
-            <Head title='Home' />
+            <Head title='Dashboard' />
+            <TitleBar>Dashboard</TitleBar>
             <Panel>
                 <h1 className='text-3xl'>Welcome</h1>
-                {auth.user ? (
-                    <p>Hi {auth.user.name}</p>
-                ) : (
-                    <p>No authenticated user, please login</p>
-                )}
+                {auth.user ? <p>Hi, {auth.user.name}</p> : null}
             </Panel>
         </>
     );

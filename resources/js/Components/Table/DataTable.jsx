@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { router, usePage, Link } from '@inertiajs/react';
-import { MagnifyingGlassIcon, ArrowPathIcon } from '@heroicons/react/16/solid';
-import { ChevronUpIcon, ChevronDownIcon, PencilIcon, TrashIcon } from '@heroicons/react/16/solid';
 import { BeatLoader } from 'react-spinners';
 
 const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
@@ -172,14 +170,14 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
 
         if (col.field === 'actions') {
             return (
-                <div className='flex justify-center space-x-2'>
+                <div className='flex justify-center gap-2'>
                     <Link
                         title='Edit'
                         className='bg-sg-600 hover:opacity-75 p-1 rounded-full transition-opacity'
                         href={route(editRoute, item)}
                         method='get'
                         as='button'>
-                        <PencilIcon className='w-5 h-5 text-white' />
+                        <i class='inline-block w-6 h-6 text-white bi bi-pencil-fill'></i>
                     </Link>
 
                     <Link
@@ -191,7 +189,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                         headers={{ 'X-Inertia-Partial-Component': 'true' }}
                         onBefore={() => handleOnBeforeDestroy(item)}
                         onSuccess={() => setIsLoading(false)}>
-                        <TrashIcon className='w-5 h-5 text-white' />
+                        <i class='inline-block w-6 bi-trash-fill h-6 text-white bi'></i>
                     </Link>
                 </div>
             );
@@ -245,13 +243,13 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                 <button
                                     type='submit'
                                     className='block bg-sg px-3 py-1 text-white'>
-                                    <MagnifyingGlassIcon className='w-4 h-4' />
+                                    <i class='font-bold bi bi-search'></i>
                                 </button>
                                 <button
                                     type='reset'
                                     onClick={handleResetFilters}
                                     className='block bg-slate-500 px-3 py-1 text-white'>
-                                    <ArrowPathIcon className='w-4 h-4' />
+                                    <i class='bi-arrow-repeat bi'></i>
                                 </button>
                             </div>
                         </div>
@@ -290,12 +288,12 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                             <span className='inline-block ml-1'>
                                                 {filters.sort_key === col.field ? (
                                                     filters.sort_direction === SORT_ASC ? (
-                                                        <ChevronUpIcon className='w-4 h-4' />
+                                                        <i class='bi-caret-up-fill bi'></i>
                                                     ) : (
-                                                        <ChevronDownIcon className='w-4 h-4' />
+                                                        <i class='bi bi-caret-down-fill'></i>
                                                     )
                                                 ) : (
-                                                    <ChevronUpIcon className='opacity-0 group-hover:opacity-100 w-4 h-4 text-gray-400' />
+                                                    <i class='opacity-0 group-hover:opacity-100 bi-caret-up-fill text-gray-400 bi'></i>
                                                 )}
                                             </span>
                                         )}

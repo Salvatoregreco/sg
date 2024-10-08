@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModulesController;
+use App\Http\Controllers\NavigationController;
 
 Route::match(['get', 'post'], '/login', function (Request $request) {
     if ($request->isMethod('get')) return app(LoginController::class)->login($request);
@@ -27,4 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
     Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
     Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');
+
+    // Navigation routes
+    Route::get('/navigation', [NavigationController::class, 'getNavigation']);
 });

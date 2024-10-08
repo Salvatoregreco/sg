@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Submodules;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Modules extends Model
 {
@@ -20,4 +20,12 @@ class Modules extends Model
         'status',
         'position'
     ];
+
+    // Relazione con i sottomoduli
+    public function submodules()
+    {
+        return $this->hasMany(Submodules::class, 'module_id', 'id')
+            ->where('status', 'online')
+            ->orderBy('position', 'ASC');
+    }
 }
