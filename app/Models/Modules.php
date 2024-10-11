@@ -18,14 +18,15 @@ class Modules extends Model
         'icon',
         'base_path',
         'status',
-        'position'
+        'position',
+        'permission_name',
     ];
 
     // Relazione con i sottomoduli
     public function submodules()
     {
         return $this->hasMany(Submodules::class, 'module_id', 'id')
-            ->where('status', 'online')
+            ->where('status', 'Y')
             ->orderBy('position', 'ASC');
     }
 }

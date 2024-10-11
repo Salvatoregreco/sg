@@ -1,66 +1,93 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SG - CMS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Permessi
 
-## About Laravel
+Il sistema di permessi si basa sulle seguenti tabelle:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* sg_roles: contiene i ruoli (es. 'admin', 'editor', 'user').
+* sg_permissions: contiene i permessi (es. 'access_blog_module', 'access_user_module').
+* sg_role_user: tabella pivot che associa gli utenti ai ruoli.
+* sg_permission_role: tabella pivot che associa i permessi ai ruoli.
+* sg_permission_user: tabella pivot che associa i permessi direttamente agli utenti.
+  
+### Assegnazione di ruoli e permessi
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Puoi creare ruoli e permessi utilizzando i modelli Eloquent o tramite Seeder.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Creazione di un ruolo
 
-## Learning Laravel
+```php
+$role = Role::create(['name' => 'editor', 'label' => 'Editore']);
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Creazione di un permesso
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```php
+$permission = Permission::create(['name' => 'access_blog_module', 'label' => 'Accesso al modulo Blog']);
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Assegnazione di permessi ad un ruolo
 
-## Laravel Sponsors
+```php
+$role = Role::where('name', 'editor')->first();
+$permission = Permission::where('name', 'access_blog_module')->first();
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+$role->permissions()->attach($permission->id);
+```
 
-### Premium Partners
+### Assegnazione di ruoli ad un utente
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```php
+$user = User::find(1);
+$role = Role::where('name', 'editor')->first();
 
-## Contributing
+$user->roles()->attach($role->id);
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Assegnazione di permessi ad un utente
 
-## Code of Conduct
+```php
+$user = User::find(1);
+$permission = Permission::where('name', 'access_blog_module')->first();
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+$user->permissions()->attach($permission->id);
+```
 
-## Security Vulnerabilities
+### Verifica dei permessi
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Per verificare se un utente ha un permesso, puoi usare il metodo `hasPermission()`.
 
-## License
+```php
+$user = User::find(1);
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+if ($user->hasPermission('access_blog_module')) {
+    // Do something
+}
+```
+
+Per verificare se un utente ha un ruolo, puoi usare il metodo `hasRole()`.
+
+```php
+$user = User::find(1);
+
+if ($user->hasRole('admin')) {
+    // Do something
+}
+```
+
+### Protezione delle rotte con middleware
+
+Per proteggere le rotte con il middleware `PermissionMiddleware`.
+
+```php
+Route::get('/blog', [BlogController::class, 'index'])->middleware('permission:access_blog_module');
+```
+
+### Frontend
+
+Per verificare se un utente ha un permesso, puoi usare l'helper `hasPermission()`.  
+In quanto i permessi sono resi disponibili tramite il metodo `share` nel middleware `HandleInertiaRequests`
+
+```javascript
+hasPermission(auth.permissions, 'access_blog_module')
+```

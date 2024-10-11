@@ -19,6 +19,7 @@ class Submodules extends Model
         'path',
         'status',
         'position',
+        'permission_name',
     ];
 
     // Relazione inversa con il modulo

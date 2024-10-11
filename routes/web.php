@@ -18,17 +18,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index']);
 
     // Users routes
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::middleware('permission:access_users_module')->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
 
     // Modules routes
-    Route::get('/modules', [ModulesController::class, 'index']);
-    Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
-    Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
-    Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');
+    Route::middleware('permission:access_modules_module')->group(function () {
+        Route::get('/modules', [ModulesController::class, 'index']);
+        Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
+        Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
+        Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');
+    });
 
     // Navigation routes
     Route::get('/navigation', [NavigationController::class, 'getNavigation']);
+    Route::get('/test', [NavigationController::class, 'testPermissions']);
 });
