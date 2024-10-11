@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     use HasDataTable;
-    
+
     public function __construct()
     {
         $this->setConfigTable([
@@ -56,8 +56,6 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        sleep(1);
-
         $query = User::query();
         $trustedParams = $request->only(['search', 'search_by', 'sort_key', 'sort_direction', 'per_page', 'page']);
 
@@ -119,8 +117,6 @@ class UserController extends Controller
             'status' => 'required|in:Y,N'
         ]);
 
-        sleep(1);
-
         $user->update($validated);
 
         return to_route('users.index')->with('success', 'User updated successfully!');
@@ -131,8 +127,6 @@ class UserController extends Controller
         if (Auth::user()->id === $user->id) {
             return redirect()->back()->with('error', 'You cannot delete your own account!');
         }
-
-        sleep(1);
 
         $user->delete();
 

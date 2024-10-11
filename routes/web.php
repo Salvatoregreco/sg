@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModulesController;
@@ -15,7 +15,7 @@ Route::match(['get', 'post'], '/login', function (Request $request) {
 
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout']);
-    Route::get('/', [HomeController::class, 'index']);
+    Route::get('/', [DashboardController::class, 'index']);
 
     // Users routes
     Route::middleware('permission:access_users_module')->group(function () {

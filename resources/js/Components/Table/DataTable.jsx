@@ -177,7 +177,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                         href={route(editRoute, item)}
                         method='get'
                         as='button'>
-                        <i class='inline-block w-6 h-6 text-white bi bi-pencil-fill'></i>
+                        <i className='inline-block w-6 h-6 text-white bi bi-pencil-fill'></i>
                     </Link>
 
                     <Link
@@ -189,7 +189,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                         headers={{ 'X-Inertia-Partial-Component': 'true' }}
                         onBefore={() => handleOnBeforeDestroy(item)}
                         onSuccess={() => setIsLoading(false)}>
-                        <i class='inline-block w-6 bi-trash-fill h-6 text-white bi'></i>
+                        <i className='inline-block w-6 bi-trash-fill h-6 text-white bi'></i>
                     </Link>
                 </div>
             );
@@ -243,13 +243,13 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                 <button
                                     type='submit'
                                     className='block bg-sg px-3 py-1 text-white'>
-                                    <i class='font-bold bi bi-search'></i>
+                                    <i className='font-bold bi bi-search'></i>
                                 </button>
                                 <button
                                     type='reset'
                                     onClick={handleResetFilters}
                                     className='block bg-slate-500 px-3 py-1 text-white'>
-                                    <i class='bi-arrow-repeat bi'></i>
+                                    <i className='bi-arrow-repeat bi'></i>
                                 </button>
                             </div>
                         </div>
@@ -288,12 +288,12 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                             <span className='inline-block ml-1'>
                                                 {filters.sort_key === col.field ? (
                                                     filters.sort_direction === SORT_ASC ? (
-                                                        <i class='bi-caret-up-fill bi'></i>
+                                                        <i className='bi-caret-up-fill bi'></i>
                                                     ) : (
-                                                        <i class='bi bi-caret-down-fill'></i>
+                                                        <i className='bi bi-caret-down-fill'></i>
                                                     )
                                                 ) : (
-                                                    <i class='opacity-0 group-hover:opacity-100 bi-caret-up-fill text-gray-400 bi'></i>
+                                                    <i className='opacity-0 group-hover:opacity-100 bi-caret-up-fill text-gray-400 bi'></i>
                                                 )}
                                             </span>
                                         )}

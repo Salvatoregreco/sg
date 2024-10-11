@@ -1,9 +1,9 @@
-import BaseLayout from '../Layout/BaseLayout';
+import BaseLayout from '../Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
 import Panel from '../Components/Panel.jsx';
 import TitleBar from '../Components/TitleBar.jsx';
 
-function Home() {
+function Dashboard() {
     const { auth } = usePage().props;
 
     return (
@@ -18,6 +18,6 @@ function Home() {
     );
 }
 
-Home.layout = (page) => <BaseLayout children={page} />;
+Dashboard.layout = (page) => <BaseLayout children={page} />;
 
-export default Home;
+export default Dashboard;
