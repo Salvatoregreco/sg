@@ -3,10 +3,10 @@ import { Head, usePage, useForm, router } from '@inertiajs/react';
 import Panel from '../../Components/Panel.jsx';
 import TitleBar from '../../Components/TitleBar.jsx';
 import Alert from '../../Components/Alert.jsx';
-import Switch from '../../Components/form/Switch.jsx';
-import TextInput from '../../Components/form/TextInput.jsx';
-import EmailInput from '../../Components/form/EmailInput.jsx';
-import Form from '../../Components/form/Form.jsx';
+import Switch from '../../Components/Form/Switch.jsx';
+import TextInput from '../../Components/Form/TextInput.jsx';
+import EmailInput from '../../Components/Form/EmailInput.jsx';
+import Form from '../../Components/Form/Form.jsx';
 
 function Edit() {
     const { user, flash } = usePage().props;

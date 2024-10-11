@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import Sidebar from '../Components/Sidebar.jsx';
-import SidebarToggle from '../Components/SidebarToggle.jsx';
+import Sidebar from '../Components/Sidebar/Sidebar.jsx';
+import SidebarToggle from '../Components/Sidebar/SidebarToggle.jsx';
 import { useState } from 'react';
 
 export default function BaseLayout({ children }) {
@@ -19,12 +19,9 @@ export default function BaseLayout({ children }) {
                 className={`flex-1 flex flex-col transition-all duration-300 ${
                     isSidebarOpen ? 'ml-64' : 'ml-0'
                 }`}>
-                <header className='bg-sg shadow-md px-6 py-4 text-white'>
+                <header className='bg-sg shadow-md px-6 py-4 text-sg-50'>
                     <div className='flex justify-between items-center gap-5 mx-auto'>
-                        <SidebarToggle
-                            isOpen={isSidebarOpen}
-                            onClick={toggleSidebar}
-                        />
+                        <SidebarToggle onClick={toggleSidebar} />
                         <div className='flex items-center gap-3'>
                             {auth.user ? <p>Logged in as: {auth.user.name}</p> : null}
                             {auth.user ? (

@@ -19,7 +19,7 @@ createInertiaApp({
                     const { visit } = event.detail;
                     const isPartialReload =
                         visit.headers && visit.headers['X-Inertia-Partial-Component'];
-                    if (!isPartialReload) setIsPageLoading(true); // Se non è un aggiornamento parziale, è una navigazione di pagina
+                    if (!isPartialReload) setIsPageLoading(true);
                 };
 
                 const handleFinish = () => {
