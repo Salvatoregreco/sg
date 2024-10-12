@@ -42,15 +42,15 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ?? null,
                 'permissions' => $request->user() ? $request->user()->getAllPermissions() : [],
                 'navigation' => $request->user() ? $request->user()->getNavigation() : [],
             ],
             'flash' => [
-                'error' => fn() => $request->session()->get('error'),
-                'success' => fn() => $request->session()->get('success'),
-                'warning' => fn() => $request->session()->get('warning'),
-                'info' => fn() => $request->session()->get('info')
+                'error' => fn() => $request->session()->get('error') ?? [],
+                'success' => fn() => $request->session()->get('success') ?? [],
+                'warning' => fn() => $request->session()->get('warning') ?? [],
+                'info' => fn() => $request->session()->get('info') ?? [],
             ]
         ]);
     }
