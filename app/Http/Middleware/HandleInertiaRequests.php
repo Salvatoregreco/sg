@@ -47,10 +47,10 @@ class HandleInertiaRequests extends Middleware
                 'navigation' => $request->user() ? $request->user()->getNavigation() : [],
             ],
             'flash' => [
-                'error' => fn() => $request->session()->get('error') ?? [],
-                'success' => fn() => $request->session()->get('success') ?? [],
-                'warning' => fn() => $request->session()->get('warning') ?? [],
-                'info' => fn() => $request->session()->get('info') ?? [],
+                'error' => fn() => $request->session()->get('error') ?? null,
+                'success' => fn() => $request->session()->get('success') ?? null,
+                'warning' => fn() => $request->session()->get('warning') ?? null,
+                'info' => fn() => $request->session()->get('info') ?? null,
             ]
         ]);
     }
