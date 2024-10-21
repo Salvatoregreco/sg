@@ -1,9 +1,9 @@
 import BaseLayout from '../../Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
-import Panel from '../../Components/Panel.jsx';
-import DataTable from '../../Components/Table/DataTable.jsx';
-import TitleBar from '../../Components/TitleBar.jsx';
-import Alert from '../../Components/Alert.jsx';
+import Panel from '@components/Panel.jsx';
+import DataTable from '@components/Table/DataTable.jsx';
+import TitleBar from '@components/TitleBar.jsx';
+import Alert from '@components/Alert.jsx';
 
 function Users() {
     const {

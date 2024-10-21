@@ -1,12 +1,12 @@
 import BaseLayout from '../../Layout/BaseLayout.jsx';
 import { Head, usePage, useForm, router } from '@inertiajs/react';
-import Panel from '../../Components/Panel.jsx';
-import TitleBar from '../../Components/TitleBar.jsx';
-import Alert from '../../Components/Alert.jsx';
-import Switch from '../../Components/Form/Switch.jsx';
-import TextInput from '../../Components/Form/TextInput.jsx';
-import EmailInput from '../../Components/Form/EmailInput.jsx';
-import Form from '../../Components/Form/Form.jsx';
+import Panel from '@components/Panel.jsx';
+import TitleBar from '@components/TitleBar.jsx';
+import Alert from '@components/Alert.jsx';
+import Switch from '@components/Form/Switch.jsx';
+import TextInput from '@components/Form/TextInput.jsx';
+import EmailInput from '@components/Form/EmailInput.jsx';
+import Form from '@components/Form/Form.jsx';
 
 function Edit() {
     const { user, flash } = usePage().props;

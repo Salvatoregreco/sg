@@ -10,4 +10,13 @@ export default defineConfig({
         }),
         react(),
     ],
+    resolve: {
+        alias: {
+            '@': '/resources/js',
+            '@components': '/resources/js/Components',
+            '@Helpers': '/resources/js/Helpers',
+            '@Layout': '/resources/js/Layout',
+            '@Pages': '/resources/js/Pages',
+        },
+    },
 });

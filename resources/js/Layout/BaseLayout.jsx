@@ -1,6 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
-import Sidebar from '../Components/Sidebar/Sidebar.jsx';
-import SidebarToggle from '../Components/Sidebar/SidebarToggle.jsx';
+import Sidebar from '@components/Sidebar/Sidebar.jsx';
+import SidebarToggle from '@components/Sidebar/SidebarToggle.jsx';
 import { useState } from 'react';
 
 export default function BaseLayout({ children }) {

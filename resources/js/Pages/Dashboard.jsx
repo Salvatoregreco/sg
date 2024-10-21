@@ -1,7 +1,7 @@
 import BaseLayout from '../Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
-import Panel from '../Components/Panel.jsx';
-import TitleBar from '../Components/TitleBar.jsx';
+import Panel from '@components/Panel.jsx';
+import TitleBar from '@components/TitleBar.jsx';
 
 function Dashboard() {
     const { auth } = usePage().props;

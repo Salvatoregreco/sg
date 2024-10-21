@@ -16,7 +16,7 @@ const SidebarModule = ({ module, isOpen, handleModuleClick }) => {
                         <span className='font-medium text-sm'>{module.label}</span>
                     ) : (
                         <Link
-                            href={module.base_path}
+                            href={'/' + module.base_path}
                             className='font-medium text-sm'>
                             {module.label}
                         </Link>
