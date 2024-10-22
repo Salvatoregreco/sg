@@ -28,7 +28,7 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            if (Auth::user()->status !== 'Y') {
+            if (!Auth::user()->status) {
                 Auth::logout();
                 return back()->withErrors(['error' => 'Your account is not active.'])->onlyInput('email');
             }

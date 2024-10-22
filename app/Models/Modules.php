@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Casts\StatusCast;
 use App\Models\Submodules;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Modules extends Model
 {
@@ -22,8 +24,27 @@ class Modules extends Model
         'permission_name',
     ];
 
-    // Relazione con i sottomoduli
-    public function submodules()
+    /**
+     * The attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:Y-m-d H:i:s',
+            'updated_at' => 'datetime:Y-m-d H:i:s',
+            'deleted_at' => 'datetime:Y-m-d H:i:s',
+            'status' => StatusCast::class,
+        ];
+    }
+
+    /**
+     * Get the submodules that belong to the module.
+     *
+     * @return HasMany
+     */
+    public function submodules(): HasMany
     {
         return $this->hasMany(Submodules::class, 'module_id', 'id')
             ->where('status', 'Y')

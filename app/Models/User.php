@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Casts\StatusCast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ class User extends Authenticatable
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
         'name',
@@ -32,7 +33,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $hidden = [
         'password',
@@ -42,18 +43,22 @@ class User extends Authenticatable
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return array
      */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'email_verified_at' => 'datetime:Y-m-d H:i:s',
             'password' => 'hashed',
+            'created_at' => 'datetime:Y-m-d H:i:s',
+            'updated_at' => 'datetime:Y-m-d H:i:s',
+            'deleted_at' => 'datetime:Y-m-d H:i:s',
+            'status' => StatusCast::class,
         ];
     }
 
     /**
-     * Recupera le associazioni tra utenti e ruoli.
+     * The roles that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Role>
      */
@@ -63,7 +68,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Recupera le associazioni tra utenti e permessi.
+     * The permissions that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\App\Models\Permission>
      */
@@ -73,10 +78,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Assegna un ruolo all'utente.
+     * Assigns a role to the user.
      *
-     * @param mixed $role Il ruolo da assegnare. Pu  essere un'istanza di Role o il nome del ruolo.
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @param mixed $role The role to assign.
      */
     public function assignRole($role)
     {
@@ -84,35 +88,39 @@ class User extends Authenticatable
     }
 
     /**
-     * Verifica se l'utente ha il ruolo specificato.
+     * Checks if the user has a specified role.
      *
-     * @param string $role Il nome del ruolo da verificare.
-     * @return bool True se l'utente ha il ruolo, false altrimenti.
+     * This method determines whether the user has been assigned a role
+     * with the given name.
+     *
+     * @param string $role The name of the role to check.
+     * @return bool True if the user has the role, false otherwise.
      */
     public function hasRole($role)
     {
         return $this->roles()->where('name', $role)->exists();
     }
 
+
     /**
-     * Verifica se l'utente ha il permesso specificato.
+     * Check if the user has a specific permission.
      *
-     * Il metodo verifica se l'utente ha il permesso assegnato tramite uno dei ruoli assegnati
-     * o se l'utente ha il permesso assegnato direttamente.
+     * This method checks if the user has the specified permission by
+     * verifying if it is assigned through roles or directly to the user.
      *
-     * @param string $permission Il nome del permesso da verificare.
-     * @return bool True se l'utente ha il permesso, false altrimenti.
+     * @param string $permission The name of the permission to check.
+     * @return bool True if the user has the permission, false otherwise.
      */
     public function hasPermission($permission)
     {
-        // Controlla i permessi assegnati tramite i ruoli
+        // Permessi assegnati tramite i ruoli
         if ($this->roles()->whereHas('permissions', function ($query) use ($permission) {
             $query->where('name', $permission);
         })->exists()) {
             return true;
         }
 
-        // Se assegni permessi direttamente agli utenti
+        // Permessi assegnati direttamente all'utente
         if ($this->permissions()->where('name', $permission)->exists()) {
             return true;
         }
@@ -120,11 +128,15 @@ class User extends Authenticatable
         return false;
     }
 
+
     /**
-     * Restituisce la lista dei permessi dell'utente, incluse
-     * le autorizzazioni assegnate tramite i ruoli.
+     * Retrieve all permissions assigned to the user.
      *
-     * @return \Illuminate\Support\Collection
+     * This method aggregates both role-based and directly-assigned permissions
+     * for the user. It combines permissions assigned through the user's roles
+     * and those directly assigned to the user, ensuring uniqueness.
+     *
+     * @return \Illuminate\Support\Collection A collection of unique permission names.
      */
     public function getAllPermissions()
     {
@@ -144,6 +156,15 @@ class User extends Authenticatable
         return $rolePermissions->merge($directPermissions)->unique()->values();
     }
 
+    /**
+     * Retrieves the navigation menu for the current user.
+     *
+     * This method retrieves the activated modules and their submodules and
+     * filters them based on the user's permissions. It returns a collection of
+     * navigation items, each containing the module/submodule details.
+     *
+     * @return \Illuminate\Support\Collection A collection of navigation items.
+     */
     public function getNavigation()
     {
         $user = Auth::user();
@@ -170,9 +191,6 @@ class User extends Authenticatable
                 }
                 return true;
             })->values();
-
-            // Se il modulo non ha sottomoduli dopo il filtro, puoi decidere se escluderlo
-            // return !$module->submodules->isEmpty();
 
             return true;
         })->values();

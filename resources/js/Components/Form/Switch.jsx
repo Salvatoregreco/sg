@@ -4,7 +4,7 @@ const Switch = ({ label, name, value, onChange }) => {
     const [status, setStatus] = useState(value);
 
     const handleToggle = () => {
-        const newValue = status === 'Y' ? 'N' : 'Y';
+        const newValue = !status;
         setStatus(newValue);
         onChange(name, newValue);
     };
@@ -19,11 +19,11 @@ const Switch = ({ label, name, value, onChange }) => {
             <div
                 onClick={handleToggle}
                 className={`w-14 h-8 flex items-center rounded-full p-1 cursor-pointer ${
-                    status === 'Y' ? 'bg-green-500' : 'bg-red-500'
+                    status ? 'bg-green-500' : 'bg-red-500'
                 }`}>
                 <div
                     className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${
-                        status === 'Y' ? 'translate-x-6' : 'translate-x-0'
+                        status ? 'translate-x-6' : 'translate-x-0'
                     }`}></div>
             </div>
         </div>

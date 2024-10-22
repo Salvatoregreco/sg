@@ -12,7 +12,7 @@ class ModulesController extends Controller
     use HasDataTable;
 
     public function __construct()
-    {   
+    {
         $this->setConfigTable([
             'tableColumns' => [
                 [
@@ -24,7 +24,12 @@ class ModulesController extends Controller
                     'align' => 'center',
                     'className' => 'justify-center'
                 ],
-                ['field' => 'label', 'label' => 'Label', 'sortable' => false, 'searchable' => true],
+                [
+                    'field' => 'label',
+                    'label' => 'Label',
+                    'sortable' => false,
+                    'searchable' => true
+                ],
                 [
                     'field' => 'status',
                     'label' => 'Status',
@@ -34,7 +39,12 @@ class ModulesController extends Controller
                     'align' => 'center',
                     'className' => 'justify-center'
                 ],
-                ['field' => 'created_at', 'label' => 'Creation Date', 'sortable' => true, 'searchable' => true],
+                [
+                    'field' => 'created_at',
+                    'label' => 'Creation Date',
+                    'sortable' => true,
+                    'searchable' => true
+                ],
                 [
                     'field' => 'actions',
                     'label' => '',
@@ -47,6 +57,7 @@ class ModulesController extends Controller
             ],
             'searchBy' => 'label',
             'formAction' => '/modules',
+            'itemsPerPage' => 20,
         ]);
     }
 
@@ -91,7 +102,7 @@ class ModulesController extends Controller
                     'searchByOptions' => array_map(fn($column) => [
                         'field' => $column['field'],
                         'label' => $column['label']
-                    ], $this->getConfigTableKey('tableColumns')),
+                    ], array_filter($this->getConfigTableKey('tableColumns'), fn($column) => $column['searchable'] !== false)),
                     'searchByDefault' => $this->getConfigTableKey('searchBy'),
                 ],
             ]
@@ -100,7 +111,24 @@ class ModulesController extends Controller
 
     public function edit(Modules $module)
     {
-        dd($module);
+        return Inertia::render('Modules/Modules.edit', ['module' => $module]);
+    }
+
+    public function update(Request $request, Modules $module)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'label' => 'required|max:255',
+            'icon' => 'max:255',
+            'base_path' => 'max:255',
+            'status' => 'required|boolean',
+            'position' => 'required|numeric:min:0',
+            'permission_name' => 'required|max:255',
+        ]);
+
+        $module->update($validated);
+
+        return to_route('modules.index')->with('success', 'Module updated successfully!');
     }
 
     public function destroy(Modules $module)

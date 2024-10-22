@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 
     // Modules routes
     Route::middleware('permission:access_modules_module')->group(function () {
-        Route::get('/modules', [ModulesController::class, 'index']);
+        Route::get('/modules', [ModulesController::class, 'index'])->name('modules.index');
         Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
         Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
         Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');

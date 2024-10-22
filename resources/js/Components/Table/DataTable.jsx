@@ -157,7 +157,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
         }
 
         if (col.field === 'status') {
-            return item.status === 'Y' ? (
+            return item.status ? (
                 <span className='inline-block border-green-500 bg-green-400 border rounded-full w-full leading-6'>
                     ON
                 </span>

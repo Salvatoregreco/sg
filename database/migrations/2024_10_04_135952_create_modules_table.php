@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('icon')->nullable();
             $table->string('base_path');
             $table->enum('status', ['N', 'Y'])->default('N');
-            $table->integer('position')->nullable();
-            $table->string('permission_name')->nullable();
+            $table->integer('position')->default(0);
+            $table->string('permission_name');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->timestamp('deleted_at')->nullable();
@@ -31,8 +31,8 @@ return new class extends Migration
             $table->string('label');
             $table->string('path');
             $table->enum('status', ['N', 'Y'])->default('N');
-            $table->integer('position')->nullable();
-            $table->string('permission_name')->nullable();
+            $table->integer('position')->default(0);
+            $table->string('permission_name');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             $table->timestamp('deleted_at')->nullable();

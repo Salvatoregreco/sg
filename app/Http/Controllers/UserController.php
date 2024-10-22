@@ -25,10 +25,30 @@ class UserController extends Controller
                     'align' => 'center',
                     'className' => 'justify-center'
                 ],
-                ['field' => 'name', 'label' => 'Name', 'sortable' => true, 'searchable' => true],
-                ['field' => 'lastname', 'label' => 'Lastname', 'sortable' => true, 'searchable' => true],
-                ['field' => 'email', 'label' => 'Email', 'sortable' => true, 'searchable' => true],
-                ['field' => 'phone', 'label' => 'Phone', 'sortable' => true, 'searchable' => true],
+                [
+                    'field' => 'name',
+                    'label' => 'Name',
+                    'sortable' => true,
+                    'searchable' => true
+                ],
+                [
+                    'field' => 'lastname',
+                    'label' => 'Lastname',
+                    'sortable' => true,
+                    'searchable' => true
+                ],
+                [
+                    'field' => 'email',
+                    'label' => 'Email',
+                    'sortable' => true,
+                    'searchable' => true
+                ],
+                [
+                    'field' => 'phone',
+                    'label' => 'Phone',
+                    'sortable' => true,
+                    'searchable' => true
+                ],
                 [
                     'field' => 'status',
                     'label' => 'Status',
@@ -114,7 +134,7 @@ class UserController extends Controller
             'lastname' => 'required|max:255',
             'email' => 'required|email|max:255|unique:sg_users,email,' . $user->id,
             'phone' => 'max:255',
-            'status' => 'required|in:Y,N'
+            'status' => 'required|boolean'
         ]);
 
         $user->update($validated);
