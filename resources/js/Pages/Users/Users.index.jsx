@@ -1,4 +1,4 @@
-import BaseLayout from '../../Layout/BaseLayout.jsx';
+import BaseLayout from '@Layout/BaseLayout.jsx';
 import { Head, usePage } from '@inertiajs/react';
 import Panel from '@components/Panel.jsx';
 import DataTable from '@components/Table/DataTable.jsx';

@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from '@inertiajs/react';
-import SidebarSubmodule from './SidebarSubmodule';
+import SidebarSubmodule from './SidebarSubmodule.jsx';
 
 const SidebarModule = ({ module, isOpen, handleModuleClick }) => {
     const hasSubmodules = module.submodules && module.submodules.length > 0;

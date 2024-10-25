@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { router, usePage, Link } from '@inertiajs/react';
 import { BeatLoader } from 'react-spinners';
 

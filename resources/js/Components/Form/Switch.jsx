@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Switch = ({ label, name, value, onChange }) => {
     const [status, setStatus] = useState(value);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from '@inertiajs/react';
 
 const SidebarSubmodule = ({ submodule, moduleBasePath }) => {

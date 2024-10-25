@@ -1,5 +1,3 @@
-import React from 'react';
-
 function EmailInput({ label, name, value, onChange }) {
     return (
         <div className='mb-4 px-2 w-full md:w-1/2 lg:w-1/4'>

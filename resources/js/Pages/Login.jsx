@@ -1,4 +1,4 @@
-import LoginLayout from '../Layout/LoginLayout';
+import LoginLayout from '@Layout/LoginLayout.jsx';
 import { Head, useForm } from '@inertiajs/react';
 
 function Login() {

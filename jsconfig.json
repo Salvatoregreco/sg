@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "module": "esnext",
+        "paths": {
+            "@/*": ["resources/js/*"],
+            "@components/*": ["resources/js/Components/*"],
+            "@Helpers/*": ["resources/js/Helpers/*"],
+            "@Layout/*": ["resources/js/Layout/*"],
+            "@Pages/*": ["resources/js/Pages/*"]
+        },
+        "jsx": "react-jsx",
+        // "allowJs": true,
+        // "checkJs": true
+    },
+    "include": ["resources/js/**/*.js", "resources/js/**/*.jsx"],
+    "exclude": ["node_modules", "public"]
+}

@@ -1,4 +1,4 @@
-import BaseLayout from '../../Layout/BaseLayout.jsx';
+import BaseLayout from '@Layout/BaseLayout.jsx';
 import { Head, usePage, useForm, router } from '@inertiajs/react';
 import Panel from '@components/Panel.jsx';
 import TitleBar from '@components/TitleBar.jsx';

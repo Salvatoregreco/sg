@@ -2,7 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 import { createInertiaApp, router } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PageLoading from '@components/PageLoding.jsx';
 
 createInertiaApp({

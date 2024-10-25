@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-
 const Form = ({ children, className = '', onSubmit, onCancel, errors, processing }) => {
     return (
         <form

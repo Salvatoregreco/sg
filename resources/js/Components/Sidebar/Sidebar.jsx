@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { usePage } from '@inertiajs/react';
-import SidebarLogo from './SidebarLogo';
-import SidebarModule from './SidebarModule';
+import SidebarLogo from './SidebarLogo.jsx';
+import SidebarModule from './SidebarModule.jsx';
 
 const Sidebar = ({ isOpen }) => {
     const logo = `https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg`;
