@@ -8,6 +8,16 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModulesController;
 use App\Http\Controllers\NavigationController;
 
+/* 
+    Nomenclature:
+    - index:    GET
+    - create    GET
+    - store     POST
+    - edit      GET
+    - update    PUT
+    - destroy   DELETE
+*/
+
 Route::match(['get', 'post'], '/login', function (Request $request) {
     if ($request->isMethod('get')) return app(LoginController::class)->login($request);
     if ($request->isMethod('post')) return app(LoginController::class)->authenticate($request);
@@ -28,6 +38,8 @@ Route::middleware('auth')->group(function () {
     // Modules routes
     Route::middleware('permission:access_modules_module')->group(function () {
         Route::get('/modules', [ModulesController::class, 'index'])->name('modules.index');
+        Route::get('/modules/create', [ModulesController::class, 'create'])->name('modules.create');
+        Route::post('/modules', [ModulesController::class, 'store'])->name('modules.store');
         Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
         Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
         Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');

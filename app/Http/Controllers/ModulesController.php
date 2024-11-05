@@ -94,6 +94,7 @@ class ModulesController extends Controller
                     'data' => $modules,
                     'columns' => $this->getConfigTableKey('tableColumns'),
                     'formAction' => $this->getConfigTableKey('formAction'),
+                    'createRoute' => 'modules.create',
                     'editRoute' => 'modules.edit',
                     'destroyRoute' => 'modules.destroy',
                     'filters' => $trustedParams,
@@ -107,6 +108,28 @@ class ModulesController extends Controller
                 ],
             ]
         );
+    }
+
+    public function create()
+    {
+        return Inertia::render('Modules/Modules.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'label' => 'required|max:255',
+            'icon' => 'max:255',
+            'base_path' => 'max:255',
+            'status' => 'required|boolean',
+            'position' => 'required|numeric|min:0',
+            'permission_name' => 'required|max:255',
+        ]);
+
+        Modules::create($validated);
+
+        return to_route('modules.index')->with('success', 'Module created successfully!');
     }
 
     public function edit(Modules $module)

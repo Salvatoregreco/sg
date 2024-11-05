@@ -13,6 +13,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
             perPageDefault,
             searchByDefault,
             searchByOptions,
+            createRoute,
             editRoute,
             destroyRoute,
         },
@@ -134,9 +135,13 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
     };
 
     const handleOnBeforeDestroy = (item) => {
-        const confirmation = window.confirm(
-            `Record with ID: ${item.id} will be deleted, are you sure?`
-        );
+        let msg = `Are you sure you want to delete the record with ID: ${item.id}?`;
+        if (item.name) msg = `Are you sure you want to delete the record: ${item.name}?`;
+        if (item.label) msg = `Are you sure you want to delete the record: ${item.label}?`;
+        if (item.title) msg = `Are you sure you want to delete the record: ${item.title}?`;
+        if (item.email) msg = `Are you sure you want to delete the record: ${item.email}?`;
+
+        const confirmation = window.confirm(msg);
 
         if (!confirmation) {
             setIsLoading(false);
@@ -213,7 +218,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
             )}
 
             {/* Filters */}
-            <div className='flex justify-between mb-4'>
+            <div className='flex justify-between items-center mb-4'>
                 <div id='data-table-filters'>
                     <form onSubmit={handleSubmit}>
                         <div className='flex'>
@@ -256,7 +261,18 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                     </form>
                 </div>
 
-                <div id='data-table-export'></div>
+                <div id='data-table-tools'>
+                    {createRoute && (
+                        <Link
+                            className='bg-green-600 hover:opacity-75 p-1 rounded-full transition-opacity'
+                            href={route(createRoute)}
+                            method='get'
+                            title='Create'
+                            as='button'>
+                            <i className='inline-block w-6 h-6 text-white bi bi-plus-lg'></i>
+                        </Link>
+                    )}
+                </div>
             </div>
 
             {/* Table */}
@@ -316,7 +332,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                                 <tr
                                     key={index}
                                     className={`border-b ${
-                                        index % 2 === 0 ? 'bg-white' : 'bg-gray-100'
+                                        index % 2 === 0 ? 'bg-white' : 'bg-slate-100'
                                     }`}>
                                     {columns.map((col) => (
                                         <td

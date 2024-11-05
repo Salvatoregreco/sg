@@ -5,14 +5,46 @@ import {
     ExclamationTriangleIcon,
 } from '@heroicons/react/16/solid';
 import { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import 'animate.css';
 
 const Alert = ({ type }) => {
     const [visible, setVisible] = useState(false);
     const [animationClass, setAnimationClass] = useState('');
+    const [alertData, setAlertData] = useState(null);
+    const { errors } = usePage().props;
 
     useEffect(() => {
-        if (type && (type.error || type.success || type.warning || type.info)) {
+        let currentAlert = { ...type };
+
+        // Controlla se ci sono errori
+        if (errors && Object.keys(errors).length > 0) {
+            currentAlert = {
+                ...currentAlert,
+                errors,
+            };
+        }
+
+        // Determina il tipo di alert e il messaggio
+        let t = null;
+        let msg = '';
+
+        if (currentAlert.errors) {
+            t = 'error';
+            msg = processErrors(currentAlert.errors);
+        } else if (currentAlert.success) {
+            t = 'success';
+            msg = currentAlert.success;
+        } else if (currentAlert.warning) {
+            t = 'warning';
+            msg = currentAlert.warning;
+        } else if (currentAlert.info) {
+            t = 'info';
+            msg = currentAlert.info;
+        }
+
+        if (t && msg) {
+            setAlertData({ type: t, message: msg });
             setVisible(true);
 
             const timer = setTimeout(() => {
@@ -22,6 +54,7 @@ const Alert = ({ type }) => {
             const removeTimer = setTimeout(() => {
                 setVisible(false);
                 setAnimationClass('');
+                setAlertData(null);
             }, 3500);
 
             return () => {
@@ -29,27 +62,18 @@ const Alert = ({ type }) => {
                 clearTimeout(removeTimer);
             };
         }
-    }, [type]);
+    }, [type, errors]);
 
-    let t = null;
-    let msg = '';
+    // Funzione helper per processare gli errori
+    const processErrors = (errors) => {
+        return Object.values(errors).map((error, index) => <div key={index}>{error}</div>);
+    };
 
-    if (type?.error) {
-        t = 'error';
-        msg = type.error;
+    if (!alertData || !visible) {
+        return null;
     }
-    if (type?.success) {
-        t = 'success';
-        msg = type.success;
-    }
-    if (type?.warning) {
-        t = 'warning';
-        msg = type.warning;
-    }
-    if (type?.info) {
-        t = 'info';
-        msg = type.info;
-    }
+
+    const { type: alertType, message } = alertData;
 
     const typeClasses = {
         error: 'bg-red-200 mb-2 p-4 border border-red-600 rounded max-w-[350px] text-red-700',
@@ -67,23 +91,20 @@ const Alert = ({ type }) => {
         info: InformationCircleIcon,
     };
 
-    const IconComponent = typeIcons[t] || null;
+    const IconComponent = typeIcons[alertType] || null;
 
     return (
-        visible &&
-        t && (
-            <div
-                className={`${typeClasses[t]} absolute right-2 top-2 flex items-center animate__animated ${animationClass}`}>
-                {IconComponent && (
-                    <IconComponent
-                        width={20}
-                        height={20}
-                        className='inline mr-2'
-                    />
-                )}
-                <span>{msg}</span>
-            </div>
-        )
+        <div
+            className={`${typeClasses[alertType]} absolute right-2 top-2 flex items-center animate__animated ${animationClass}`}>
+            {IconComponent && (
+                <IconComponent
+                    width={20}
+                    height={20}
+                    className='inline mr-2'
+                />
+            )}
+            <span>{message}</span>
+        </div>
     );
 };
 
