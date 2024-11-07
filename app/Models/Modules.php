@@ -15,7 +15,7 @@ class Modules extends Model
     protected $table = 'sg_modules';
 
     protected $fillable = [
-        'module',
+        'name',
         'label',
         'icon',
         'base_path',

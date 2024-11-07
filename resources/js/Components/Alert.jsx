@@ -64,7 +64,6 @@ const Alert = ({ type }) => {
         }
     }, [type, errors]);
 
-    // Funzione helper per processare gli errori
     const processErrors = (errors) => {
         return Object.values(errors).map((error, index) => <div key={index}>{error}</div>);
     };
@@ -95,7 +94,7 @@ const Alert = ({ type }) => {
 
     return (
         <div
-            className={`${typeClasses[alertType]} absolute right-2 top-2 flex items-center animate__animated ${animationClass}`}>
+            className={`${typeClasses[alertType]} absolute right-2 top-2 flex items-center animate__animated ${animationClass} z-10`}>
             {IconComponent && (
                 <IconComponent
                     width={20}
