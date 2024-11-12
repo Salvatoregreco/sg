@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { router, usePage, Link } from '@inertiajs/react';
 import { BeatLoader } from 'react-spinners';
+import EditButton from '@components/Table/EditButton.jsx';
+import DeleteButton from '@components/Table/DeleteButton.jsx';
+import CreateButton from '@components/Table/CreateButton.jsx';
 
 const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
     const SORT_ASC = 'asc';
@@ -176,26 +179,17 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
         if (col.field === 'actions') {
             return (
                 <div className='flex justify-center gap-2'>
-                    <Link
-                        title='Edit'
-                        className='bg-sg-600 hover:opacity-75 p-1 rounded-full transition-opacity'
-                        href={route(editRoute, item)}
-                        method='get'
-                        as='button'>
-                        <i className='inline-block w-6 h-6 text-white bi bi-pencil-fill'></i>
-                    </Link>
+                    <EditButton
+                        editRoute={editRoute}
+                        item={item}
+                    />
 
-                    <Link
-                        title='Delete'
-                        className='bg-red-600 hover:opacity-75 p-1 rounded-full transition-opacity'
-                        href={route(destroyRoute, item)}
-                        method='delete'
-                        as='button'
-                        headers={{ 'X-Inertia-Partial-Component': 'true' }}
+                    <DeleteButton
+                        destroyRoute={destroyRoute}
+                        item={item}
                         onBefore={() => handleOnBeforeDestroy(item)}
-                        onSuccess={() => setIsLoading(false)}>
-                        <i className='inline-block w-6 bi-trash-fill h-6 text-white bi'></i>
-                    </Link>
+                        onSuccess={() => setIsLoading(false)}
+                    />
                 </div>
             );
         }
@@ -262,16 +256,7 @@ const DataTable = ({ data = {}, filters = {}, columns = [], formAction }) => {
                 </div>
 
                 <div id='data-table-tools'>
-                    {createRoute && (
-                        <Link
-                            className='bg-green-600 hover:opacity-75 p-1 rounded-full transition-opacity'
-                            href={route(createRoute)}
-                            method='get'
-                            title='Create'
-                            as='button'>
-                            <i className='inline-block w-6 h-6 text-white bi bi-plus-lg'></i>
-                        </Link>
-                    )}
+                    {createRoute && <CreateButton createRoute={createRoute} />}
                 </div>
             </div>
 
