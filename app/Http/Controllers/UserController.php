@@ -107,6 +107,7 @@ class UserController extends Controller
                     'data' => $users,
                     'columns' => $this->getConfigTableKey('tableColumns'),
                     'formAction' => $this->getConfigTableKey('formAction'),
+                    'createRoute' => 'users.create',
                     'editRoute' => 'users.edit',
                     'destroyRoute' => 'users.destroy',
                     'filters' => $trustedParams,
@@ -120,6 +121,27 @@ class UserController extends Controller
                 ],
             ]
         );
+    }
+
+    public function create()
+    {
+        return Inertia::render('Users/Users.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:sg_users,email',
+            'password' => 'required|min:8|max:16',
+            'phone' => 'max:255',
+            'status' => 'required|boolean'
+        ]);
+
+        User::create($validated);
+
+        return to_route('users.index')->with('success', 'User created successfully!');
     }
 
     public function edit(User $user)
