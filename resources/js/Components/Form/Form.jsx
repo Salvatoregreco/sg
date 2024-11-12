@@ -1,4 +1,4 @@
-const Form = ({ children, className = '', onSubmit, onCancel, errors, processing }) => {
+const Form = ({ children, className = '', onSubmit, onCancel, processing }) => {
     return (
         <form
             className={`space-y-6 ${className}`}

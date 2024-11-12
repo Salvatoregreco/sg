@@ -25,7 +25,11 @@ export default function BaseLayout({ children }) {
                         <div className='flex items-center gap-3'>
                             {auth.user ? <p>Logged in as: {auth.user.name}</p> : null}
                             {auth.user ? (
-                                <Link href='/logout'>Logout</Link>
+                                <Link
+                                    href='/logout'
+                                    title='Logout'>
+                                    <i className='font-bold bi bi-escape'></i>
+                                </Link>
                             ) : (
                                 <Link href='/login'>Login</Link>
                             )}

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\Models\Role;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Permission;
 use App\Traits\HasDataTable;
 use Illuminate\Http\Request;
 
@@ -146,11 +148,21 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        return Inertia::render('Users/Users.edit', ['user' => $user]);
+        $roles = Role::all();
+
+        $user->setAttribute('role_id', $user->roles->pluck('id')[0] ?? 2);
+        $user->unsetRelation('roles');
+
+        $user->setAttribute('permissions', $user->permissions->pluck('id')->toArray() ?? []);
+        $user->unsetRelation('permissions');
+
+        return Inertia::render('Users/Users.edit', ['user' => $user, 'roles' => $roles, 'permissions' => Permission::all()]);
     }
 
     public function update(Request $request, User $user)
     {
+        dd($request->all(), $user);
+
         $validated = $request->validate([
             'name' => 'required|max:255',
             'lastname' => 'required|max:255',

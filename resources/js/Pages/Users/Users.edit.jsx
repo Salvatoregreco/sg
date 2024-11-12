@@ -6,12 +6,23 @@ import Alert from '@components/Alert.jsx';
 import Switch from '@components/Form/Switch.jsx';
 import TextInput from '@components/Form/TextInput.jsx';
 import EmailInput from '@components/Form/EmailInput.jsx';
+import SelectInput from '@components/Form/SelectInput.jsx';
 import Form from '@components/Form/Form.jsx';
+import HiddenInput from '@/Components/Form/HiddenInput';
 
 function Edit() {
-    const { user, flash } = usePage().props;
+    const { user, roles, permissions, flash } = usePage().props;
 
-    const { put, processing, errors, clearErrors, data, setData } = useForm({
+    // Stato e handler per il primo form (dati utente)
+    const {
+        put: putUserData,
+        processing: processingUserData,
+        errors: errorsUserData,
+        clearErrors: clearErrorsUserData,
+        data: userData,
+        setData: setUserData,
+    } = useForm({
+        op: 'userData',
         name: user.name || '',
         lastname: user.lastname || '',
         email: user.email || '',
@@ -19,10 +30,30 @@ function Edit() {
         status: user.status || false,
     });
 
-    function handleSubmit(e) {
+    // Stato e handler per il secondo form (ruoli e permessi)
+    const {
+        put: putRoleData,
+        processing: processingRoleData,
+        errors: errorsRoleData,
+        clearErrors: clearErrorsRoleData,
+        data: roleData,
+        setData: setRoleData,
+    } = useForm({
+        op: 'roleData',
+        role_id: user.role_id || '',
+        permissions: user.permissions || [],
+    });
+
+    function handleUserDataSubmit(e) {
         e.preventDefault();
-        clearErrors();
-        put(route('users.update', user));
+        clearErrorsUserData();
+        putUserData(route('users.update', user));
+    }
+
+    function handleRoleDataSubmit(e) {
+        e.preventDefault();
+        clearErrorsRoleData();
+        putRoleData(route('users.update', user));
     }
 
     function handleCancel(e) {
@@ -37,40 +68,66 @@ function Edit() {
             <Panel>
                 <Alert type={flash} />
 
+                {/* Primo Form: Dati Utente */}
                 <Form
-                    onSubmit={handleSubmit}
-                    errors={errors}
-                    processing={processing}
+                    onSubmit={handleUserDataSubmit}
+                    errors={errorsUserData}
+                    processing={processingUserData}
                     onCancel={handleCancel}>
                     <TextInput
                         label='Name'
                         name='name'
-                        value={data.name}
-                        onChange={setData}
+                        value={userData.name}
+                        onChange={setUserData}
                     />
                     <TextInput
                         label='Lastname'
                         name='lastname'
-                        value={data.lastname}
-                        onChange={setData}
+                        value={userData.lastname}
+                        onChange={setUserData}
                     />
                     <EmailInput
                         label='Email'
                         name='email'
-                        value={data.email}
-                        onChange={setData}
+                        value={userData.email}
+                        onChange={setUserData}
                     />
                     <TextInput
                         label='Phone'
                         name='phone'
-                        value={data.phone}
-                        onChange={setData}
+                        value={userData.phone}
+                        onChange={setUserData}
                     />
                     <Switch
                         label='Status'
                         name='status'
-                        value={data.status}
-                        onChange={setData}
+                        value={userData.status}
+                        onChange={setUserData}
+                    />
+                </Form>
+            </Panel>
+
+            {/* Secondo Form: Ruoli e Permessi */}
+            <Panel>
+                <Form
+                    onSubmit={handleRoleDataSubmit}
+                    errors={errorsRoleData}
+                    processing={processingRoleData}
+                    onCancel={handleCancel}>
+                    <SelectInput
+                        label='Role'
+                        name='role_id'
+                        value={roleData.role_id}
+                        options={roles}
+                        onChange={setRoleData}
+                    />
+                    <SelectInput
+                        label='Permissions'
+                        name='permissions'
+                        value={roleData.permissions}
+                        options={permissions}
+                        onChange={setRoleData}
+                        multiple={true}
                     />
                 </Form>
             </Panel>
