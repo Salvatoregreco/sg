@@ -8,7 +8,6 @@ import TextInput from '@components/Form/TextInput.jsx';
 import EmailInput from '@components/Form/EmailInput.jsx';
 import SelectInput from '@components/Form/SelectInput.jsx';
 import Form from '@components/Form/Form.jsx';
-import HiddenInput from '@/Components/Form/HiddenInput';
 
 function Edit() {
     const { user, roles, permissions, flash } = usePage().props;

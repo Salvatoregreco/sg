@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Modules;
-use Illuminate\Http\Request;
+use App\Models\Submodules;
 use App\Traits\HasDataTable;
+use Illuminate\Http\Request;
 
 class ModulesController extends Controller
 {
@@ -134,11 +135,16 @@ class ModulesController extends Controller
 
     public function edit(Modules $module)
     {
-        return Inertia::render('Modules/Modules.edit', ['module' => $module]);
+        return Inertia::render('Modules/Modules.edit', [
+            'module' => $module,
+            'all_submodules' => Submodules::all(),
+            'module_submodules' => $module->submodules()->get()->pluck('id')->toArray()
+        ]);
     }
 
     public function update(Request $request, Modules $module)
     {
+        dd($request->all(), $module);
         $validated = $request->validate([
             'name' => 'required|max:255',
             'label' => 'required|max:255',
