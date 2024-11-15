@@ -47,6 +47,14 @@ class ModulesController extends Controller
                     'searchable' => true
                 ],
                 [
+                    'field' => 'position',
+                    'label' => 'Position',
+                    'sortable' => true,
+                    'searchable' => false,
+                    'width' => '1px',
+                    'align' => 'center',
+                ],
+                [
                     'field' => 'actions',
                     'label' => '',
                     'sortable' => false,
@@ -144,7 +152,34 @@ class ModulesController extends Controller
 
     public function update(Request $request, Modules $module)
     {
-        dd($request->all(), $module);
+        $op = $request->input('op', 'module');
+
+        if ($op == 'module') {
+            $this->updateModule($request, $module);
+        }
+
+        if ($op == 'submodules') {
+            $this->updateSubmodules($request, $module);
+        }
+    }
+
+    private function updateSubmodules(Request $request, Modules $module)
+    {
+        $validated = $request->validate([
+            'submodules' => 'array',
+        ]);
+
+        Submodules::where('module_id', $module->id)->update(['module_id' => 0]);
+
+        foreach ($validated['submodules'] as $submodule_id) {
+            Submodules::where('id', $submodule_id)->update(['module_id' => $module->id]);
+        }
+
+        return to_route('modules.edit', $module)->with('success', 'Submodules updated successfully!');
+    }
+
+    private function updateModule(Request $request, Modules $module)
+    {
         $validated = $request->validate([
             'name' => 'required|max:255',
             'label' => 'required|max:255',
@@ -157,7 +192,7 @@ class ModulesController extends Controller
 
         $module->update($validated);
 
-        return to_route('modules.index')->with('success', 'Module updated successfully!');
+        return to_route('modules.edit', $module)->with('success', 'Module updated successfully!');
     }
 
     public function destroy(Modules $module)

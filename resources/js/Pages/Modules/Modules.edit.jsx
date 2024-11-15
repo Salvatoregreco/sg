@@ -31,7 +31,6 @@ function Edit() {
         setData: setSubModulesData,
     } = useForm({
         op: 'submodules',
-        module_id: module.id,
         submodules: module_submodules || [],
     });
 
@@ -57,12 +56,12 @@ function Edit() {
         router.get(route('modules.index'));
     }
 
-    console.log('subModulesData.submodules:', subModulesData.submodules);
-
     return (
         <>
             <Head title={`${module.label}`} />
             <TitleBar>{`${module.label}`}</TitleBar>
+
+            {/* Modulo */}
             <Panel>
                 <Alert type={flash} />
 
@@ -117,8 +116,14 @@ function Edit() {
                 </Form>
             </Panel>
 
+            {/* Sotto moduli */}
             <Panel>
-                <Alert type={flash} />
+                <div className='flex justify-end items-center py-2'>
+                    <button className='bg-sg px-4 py-2 rounded-md text-white'>
+                        Nuovo sotto modulo
+                    </button>
+                </div>
+
                 <Form
                     onSubmit={handleSubmitSubmodules}
                     errors={errorsSubmodules}
