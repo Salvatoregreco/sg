@@ -2,11 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ModulesController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NavigationController;
+use App\Http\Controllers\SubModulesController;
 
 /* 
     Nomenclature:
@@ -44,7 +45,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/modules', [ModulesController::class, 'store'])->name('modules.store');
         Route::get('/modules/{module}/edit', [ModulesController::class, 'edit'])->name('modules.edit');
         Route::put('/modules/{module}', [ModulesController::class, 'update'])->name('modules.update');
-        Route::delete('/modules/{module}', [ModulesController::class, 'destroy'])->name('modules.destroy');
+        Route::delete('/modules/{module}', [ModulesController::class, 'destroyModule'])->name('modules.destroy');
+
+        Route::get('/submodules', [SubModulesController::class, 'indexSubmodules'])->name('submodules.index');
+        Route::get('/submodules/create', [SubModulesController::class, 'createSubmodule'])->name('submodules.create');
+        Route::post('/submodules', [SubModulesController::class, 'storeSubmodule'])->name('submodules.store');
+        Route::get('/submodules/{submodule}/edit', [SubModulesController::class, 'editSubmodule'])->name('submodules.edit');
+        Route::put('/submodules/{submodule}', [SubModulesController::class, 'updateSubmodule'])->name('submodules.update');
+        Route::delete('/submodules/{submodule}', [SubModulesController::class, 'destroySubmodule'])->name('submodules.destroy');
     });
 
     // Navigation routes

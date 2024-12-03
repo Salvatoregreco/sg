@@ -8,7 +8,7 @@ use App\Models\Submodules;
 use App\Traits\HasDataTable;
 use Illuminate\Http\Request;
 
-class ModulesController extends Controller
+class SubModulesController extends Controller
 {
     use HasDataTable;
 
@@ -65,14 +65,14 @@ class ModulesController extends Controller
                 ],
             ],
             'searchBy' => 'label',
-            'formAction' => '/modules',
+            'formAction' => '/submodules',
             'itemsPerPage' => 20,
         ]);
     }
 
-    public function index(Request $request)
+    public function indexSubmodules(Request $request)
     {
-        $query = Modules::query();
+        $query = Submodules::query();
         $trustedParams = $request->only(['search', 'search_by', 'sort_key', 'sort_direction', 'per_page', 'page']);
 
         // Filtraggio per ricerca
@@ -92,20 +92,21 @@ class ModulesController extends Controller
         // Elementi per pagina
         $itemsPerPage = $trustedParams['per_page'] ?? $this->getConfigTableKey('itemsPerPage');
 
-        $modules = $query->paginate($itemsPerPage)->appends($trustedParams);
+        $submodules = $query->paginate($itemsPerPage)->appends($trustedParams);
 
         // dd($query->toSql(), $query->getBindings());
+        // dd($submodules);
 
         return Inertia::render(
-            'Modules/Modules.index',
+            'Modules/Submodules.index',
             [
                 'DataTable' => [
-                    'data' => $modules,
+                    'data' => $submodules,
                     'columns' => $this->getConfigTableKey('tableColumns'),
                     'formAction' => $this->getConfigTableKey('formAction'),
-                    'createRoute' => 'modules.create',
-                    'editRoute' => 'modules.edit',
-                    'destroyRoute' => 'modules.destroy',
+                    'createRoute' => 'submodules.create',
+                    'editRoute' => 'submodules.edit',
+                    'destroyRoute' => 'submodules.destroy',
                     'filters' => $trustedParams,
                     'perPageOptions' => $this->getConfigTableKey('perPageOptions'),
                     'perPageDefault' => $this->getConfigTableKey('itemsPerPage'),
@@ -119,84 +120,24 @@ class ModulesController extends Controller
         );
     }
 
-    public function create()
+    public function createSubmodule()
     {
-        return Inertia::render('Modules/Modules.create');
+
+        return Inertia::render('Modules/Submodules.create');
     }
 
-    public function store(Request $request)
+    public function storeSubmodule(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
             'label' => 'required|max:255',
-            'icon' => 'max:255',
-            'base_path' => 'max:255',
+            'path' => 'required|max:255',
             'status' => 'required|boolean',
             'position' => 'required|numeric|min:0',
             'permission_name' => 'required|max:255',
         ]);
 
-        Modules::create($validated);
+        Submodules::create($validated);
 
-        return to_route('modules.index')->with('success', 'Module created successfully!');
-    }
-
-    public function edit(Modules $module)
-    {
-        return Inertia::render('Modules/Modules.edit', [
-            'module' => $module,
-            'all_submodules' => Submodules::where('status', 'Y')->get(),
-            'module_submodules' => $module->submodules()->get()->pluck('id')->toArray()
-        ]);
-    }
-
-    public function update(Request $request, Modules $module)
-    {
-        $operation = $request->input('op');
-
-        match ($operation) {
-            'module' => $this->updateModule($request, $module),
-            'submodules' => $this->updateSubmodules($request, $module),
-            default => redirect()->back()->with('warning', 'Invalid operation'),
-        };
-    }
-
-    private function updateSubmodules(Request $request, Modules $module)
-    {
-        $validated = $request->validate([
-            'submodules' => 'array',
-        ]);
-
-        Submodules::where('module_id', $module->id)->update(['module_id' => 0]);
-
-        foreach ($validated['submodules'] as $submodule_id) {
-            Submodules::where('id', $submodule_id)->update(['module_id' => $module->id]);
-        }
-
-        return to_route('modules.edit', $module)->with('success', 'Submodules updated successfully!');
-    }
-
-    private function updateModule(Request $request, Modules $module)
-    {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'label' => 'required|max:255',
-            'icon' => 'max:255',
-            'base_path' => 'max:255',
-            'status' => 'required|boolean',
-            'position' => 'required|numeric:min:0',
-            'permission_name' => 'required|max:255',
-        ]);
-
-        $module->update($validated);
-
-        return to_route('modules.edit', $module)->with('success', 'Module updated successfully!');
-    }
-
-    public function destroyModule(Modules $module)
-    {
-        $module->delete();
-
-        return redirect()->back()->with('success', 'Module deleted successfully!');
+        return to_route('modules.index')->with('success', 'Sotto modulo creato con successo!');
     }
 }

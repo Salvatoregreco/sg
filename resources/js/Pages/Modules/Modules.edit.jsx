@@ -5,13 +5,18 @@ import TitleBar from '@components/TitleBar.jsx';
 import Alert from '@components/Alert.jsx';
 import Switch from '@components/Form/Switch.jsx';
 import TextInput from '@components/Form/TextInput.jsx';
-import Checkbox from '@/Components/Form/Checkbox.jsx';
+import Checkbox from '@components/Form/Checkbox.jsx';
 import Form from '@components/Form/Form.jsx';
 
-function Edit() {
-    const { module, all_submodules, module_submodules, flash } = usePage().props;
-
-    const { put, processing, errors, clearErrors, data, setData } = useForm({
+function ModuleForm({ module, flash }) {
+    const {
+        put: putModules,
+        processing: processingModules,
+        errors: errorsModules,
+        clearErrors: clearErrorsModules,
+        data: modulesData,
+        setData: setModulesData,
+    } = useForm({
         op: 'module',
         name: module.name || '',
         label: module.label || '',
@@ -22,6 +27,75 @@ function Edit() {
         permission_name: module.permission_name || '',
     });
 
+    function handleSubmit(e) {
+        e.preventDefault();
+        clearErrorsModules();
+        putModules(route('modules.update', module));
+    }
+
+    function handleCancel(e) {
+        e.preventDefault();
+        router.get(route('modules.index'));
+    }
+
+    return (
+        <Panel>
+            <Alert type={flash} />
+
+            <Form
+                onSubmit={handleSubmit}
+                errors={errorsModules}
+                processing={processingModules}
+                onCancel={handleCancel}>
+                <TextInput
+                    label='Name'
+                    name='name'
+                    value={modulesData.name}
+                    onChange={setModulesData}
+                />
+                <TextInput
+                    label='Label'
+                    name='label'
+                    value={modulesData.label}
+                    onChange={setModulesData}
+                />
+                <TextInput
+                    label='Icon (e.g., fa fa-user)'
+                    name='icon'
+                    value={modulesData.icon}
+                    onChange={setModulesData}
+                />
+                <TextInput
+                    label='Base Path (e.g., modules)'
+                    name='base_path'
+                    value={modulesData.base_path}
+                    onChange={setModulesData}
+                />
+                <Switch
+                    label='Status'
+                    name='status'
+                    value={modulesData.status}
+                    onChange={setModulesData}
+                />
+                {/* TODO: creare componente per la gestione della posizione */}
+                <TextInput
+                    label='Position'
+                    name='position'
+                    value={modulesData.position}
+                    onChange={setModulesData}
+                />
+                <TextInput
+                    label='Permission Name'
+                    name='permission_name'
+                    value={modulesData.permission_name}
+                    onChange={setModulesData}
+                />
+            </Form>
+        </Panel>
+    );
+}
+
+function SubmodulesForm({ module, all_submodules, module_submodules }) {
     const {
         put: putSubmodules,
         processing: processingSubmodules,
@@ -36,8 +110,8 @@ function Edit() {
 
     function handleSubmit(e) {
         e.preventDefault();
-        clearErrors();
-        put(route('modules.update', module));
+        clearErrorsSubModules();
+        putSubmodules(route('modules.update', module));
     }
 
     function handleCancel(e) {
@@ -45,16 +119,44 @@ function Edit() {
         router.get(route('modules.index'));
     }
 
-    function handleSubmitSubmodules(e) {
-        e.preventDefault();
-        clearErrorsSubModules();
-        putSubmodules(route('modules.update', module));
-    }
+    return (
+        <Panel>
+            <Form
+                onSubmit={handleSubmit}
+                errors={errorsSubmodules}
+                processing={processingSubmodules}
+                onCancel={handleCancel}>
+                <div className='mb-4 px-2 w-full'>
+                    <label className='block mb-2 font-medium text-gray-700 text-sm'>
+                        Sotto moduli
+                    </label>
+                    <div
+                        className='column-count-container'
+                        style={{
+                            columnCount: Math.ceil(all_submodules.length / 5),
+                            columnGap: '1rem',
+                        }}>
+                        {all_submodules.map((submodule) => (
+                            <div
+                                key={submodule.id}
+                                className='mb-2 break-inside-avoid'>
+                                <Checkbox
+                                    label={submodule.label}
+                                    name={submodule.id}
+                                    checked={subModulesData.submodules.includes(submodule.id)}
+                                    onChange={setSubModulesData}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </Form>
+        </Panel>
+    );
+}
 
-    function handleCancelSubmodules(e) {
-        e.preventDefault();
-        router.get(route('modules.index'));
-    }
+function Edit() {
+    const { module, all_submodules, module_submodules, flash } = usePage().props;
 
     return (
         <>
@@ -62,99 +164,17 @@ function Edit() {
             <TitleBar>{`${module.label}`}</TitleBar>
 
             {/* Modulo */}
-            <Panel>
-                <Alert type={flash} />
-
-                <Form
-                    onSubmit={handleSubmit}
-                    errors={errors}
-                    processing={processing}
-                    onCancel={handleCancel}>
-                    <TextInput
-                        label='Name'
-                        name='name'
-                        value={data.name}
-                        onChange={setData}
-                    />
-                    <TextInput
-                        label='Label'
-                        name='label'
-                        value={data.label}
-                        onChange={setData}
-                    />
-                    <TextInput
-                        label='Icon (eg: fa fa-user)'
-                        name='icon'
-                        value={data.icon}
-                        onChange={setData}
-                    />
-                    <TextInput
-                        label='Base Path (eg: modules)'
-                        name='base_path'
-                        value={data.base_path}
-                        onChange={setData}
-                    />
-                    <Switch
-                        label='Status'
-                        name='status'
-                        value={data.status}
-                        onChange={setData}
-                    />
-                    {/* TODO: creare componente per la gestione della posizione */}
-                    <TextInput
-                        label='Position'
-                        name='position'
-                        value={data.position}
-                        onChange={setData}
-                    />
-                    <TextInput
-                        label='Permission Name'
-                        name='permission_name'
-                        value={data.permission_name}
-                        onChange={setData}
-                    />
-                </Form>
-            </Panel>
+            <ModuleForm
+                module={module}
+                flash={flash}
+            />
 
             {/* Sotto moduli */}
-            <Panel>
-                <div className='flex justify-end items-center py-2'>
-                    <button className='bg-sg px-4 py-2 rounded-md text-white'>
-                        Nuovo sotto modulo
-                    </button>
-                </div>
-
-                <Form
-                    onSubmit={handleSubmitSubmodules}
-                    errors={errorsSubmodules}
-                    processing={processingSubmodules}
-                    onCancel={handleCancelSubmodules}>
-                    <div className='mb-4 px-2 w-full'>
-                        <label className='block mb-2 font-medium text-gray-700 text-sm'>
-                            Sotto moduli
-                        </label>
-                        <div
-                            className='column-count-container'
-                            style={{
-                                columnCount: Math.ceil(all_submodules.length / 5),
-                                columnGap: '1rem',
-                            }}>
-                            {all_submodules.map((submodule) => (
-                                <div
-                                    key={submodule.id}
-                                    className='mb-2 break-inside-avoid'>
-                                    <Checkbox
-                                        label={submodule.label}
-                                        name={submodule.id}
-                                        checked={subModulesData.submodules.includes(submodule.id)}
-                                        onChange={setSubModulesData}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </Form>
-            </Panel>
+            <SubmodulesForm
+                module={module}
+                all_submodules={all_submodules}
+                module_submodules={module_submodules}
+            />
         </>
     );
 }

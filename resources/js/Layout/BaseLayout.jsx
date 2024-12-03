@@ -23,7 +23,7 @@ export default function BaseLayout({ children }) {
                     <div className='flex justify-between items-center gap-5 mx-auto'>
                         <SidebarToggle onClick={toggleSidebar} />
                         <div className='flex items-center gap-3'>
-                            {auth.user ? <p>Logged in as: {auth.user.name}</p> : null}
+                            {auth.user ? <p>Account: {auth.user.name}</p> : null}
                             {auth.user ? (
                                 <Link
                                     href='/logout'
