@@ -122,7 +122,6 @@ class SubModulesController extends Controller
 
     public function createSubmodule()
     {
-
         return Inertia::render('Modules/Submodules.create');
     }
 
@@ -136,7 +135,7 @@ class SubModulesController extends Controller
             'permission_name' => 'required|max:255',
         ]);
 
-        Submodules::create($validated);
+        (new Submodules())->create($validated);
 
         return to_route('modules.index')->with('success', 'Sotto modulo creato con successo!');
     }

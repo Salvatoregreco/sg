@@ -136,7 +136,7 @@ class ModulesController extends Controller
             'permission_name' => 'required|max:255',
         ]);
 
-        Modules::create($validated);
+        (new Modules())->create($validated);
 
         return to_route('modules.index')->with('success', 'Module created successfully!');
     }

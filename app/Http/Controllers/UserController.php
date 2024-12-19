@@ -141,7 +141,7 @@ class UserController extends Controller
             'status' => 'required|boolean'
         ]);
 
-        User::create($validated);
+        (new User())->create($validated);
 
         return to_route('users.index')->with('success', 'User created successfully!');
     }
@@ -161,7 +161,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        dd($request->all(), $user);
+        // dd($request->all(), $user);
 
         $validated = $request->validate([
             'name' => 'required|max:255',
