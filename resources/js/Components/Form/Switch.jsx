@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Switch = ({ label, name, value, onChange }) => {
+function Switch({ label, name, value, onChange }) {
     const [status, setStatus] = useState(value);
 
     const handleToggle = () => {
@@ -28,6 +28,6 @@ const Switch = ({ label, name, value, onChange }) => {
             </div>
         </div>
     );
-};
+}
 
 export default Switch;

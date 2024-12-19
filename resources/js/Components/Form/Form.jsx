@@ -1,4 +1,4 @@
-const Form = ({ children, className = '', onSubmit, onCancel, processing }) => {
+function Form({ children, className = '', onSubmit, onCancel, processing }) {
     return (
         <form
             className={`space-y-6 ${className}`}
@@ -22,6 +22,6 @@ const Form = ({ children, className = '', onSubmit, onCancel, processing }) => {
             </div>
         </form>
     );
-};
+}
 
 export default Form;
