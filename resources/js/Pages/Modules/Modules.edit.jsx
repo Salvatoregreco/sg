@@ -145,6 +145,7 @@ function SubmodulesForm({ module, all_submodules, module_submodules }) {
                                     name={submodule.id}
                                     checked={subModulesData.submodules.includes(submodule.id)}
                                     onChange={setSubModulesData}
+                                    dataField='submodules'
                                 />
                             </div>
                         ))}

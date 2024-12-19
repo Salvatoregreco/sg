@@ -1,15 +1,17 @@
-function Checkbox({ label, name, checked, onChange }) {
+function Checkbox({ label, name, checked, onChange, dataField }) {
+    if (!dataField) throw new Error('The `dataField` prop is required.');
+
     const handleChange = (event) => {
         const isChecked = event.target.checked;
 
         onChange((prevData) => {
-            const updatedSubmodules = isChecked
-                ? [...prevData.submodules, name]
-                : prevData.submodules.filter((id) => id !== name);
+            const updatedArray = isChecked
+                ? [...prevData[dataField], name]
+                : prevData[dataField].filter((id) => id !== name);
 
             return {
                 ...prevData,
-                submodules: updatedSubmodules,
+                [dataField]: updatedArray,
             };
         });
     };
